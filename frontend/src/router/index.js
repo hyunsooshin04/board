@@ -22,7 +22,12 @@ const routes = [
     {
         path: "/board/list",
         name: "board",
-        component: () => import('../views/BoardList')
+        component: () => import('../components/board/List')
+    },
+    {
+        path: "/board/write",
+        name: "write",
+        component: () => import('../components/Write')
     }
 ];
 

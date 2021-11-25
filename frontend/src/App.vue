@@ -1,26 +1,36 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <Header></Header>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+    <Header/>
+
+    <div class="container"> <!-- class 추가 -->
+      <router-view/>
     </div>
-    <router-view />
-    <Footer></Footer>
+
+    <Footer/>
   </div>
 </template>
+
 <script>
-import Header from "./components/Header";
+import Header from './components/Header';
+import Footer from './components/Footer';
+
 
 export default {
-  name: "App",
+  name: 'App',
   components: {
-    Header,
-    Footer: () => import('./components/Footer')
+    Header
+    , Footer
   }
 }
 </script>
+
+//css 수정
 <style>
+html, body {
+  padding: 0;
+  margin: 0;
+}
+
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -29,16 +39,31 @@ export default {
   color: #2c3e50;
 }
 
-#nav {
-  padding: 30px;
+h1 {
+  color: #43b984;
 }
 
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
+table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-#nav a.router-link-exact-active {
-  color: #42b983;
+.wrap {
+  width: 100%;
+}
+
+.container {
+  width: 800px;
+  margin: 0 auto;
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn {
+  padding: 10px;
+  background: #34445c;
+  color: #fff;
 }
 </style>

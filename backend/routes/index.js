@@ -2,17 +2,15 @@ var express = require('express');
 var router = express.Router();
 const api = require("./api"); //api router 호출
 
-console.log("routes에 접근")
-
 /* GET home page. */
-router.get('/', function(req, res, next) {
-    console.log("path="+req.path);
+router.get('/', function (req, res, next) {
+    console.log("path=" + req.path);
     next();
 });
 
-router.use("/api",api); //api router 적용
+router.use("/api", api); //api router 적용
 
-router.all('/',(req,res)=>{
+router.all('/', (req, res) => {
     res.send("{message:welcome}");
 })
 

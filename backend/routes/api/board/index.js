@@ -1,13 +1,11 @@
 const router = require('express').Router();
+const dao = require('./dao');
 
-router.get("/",(req,res)=>{ //화면에 good 노출
-    res.send("good");
-});
+router.get("/", dao.list);
+router.post("/", dao.add);
 
-router.all('*',(req, res)=> {
-    res.status(404).send({success:false, msg:'board unknown uri ${req.path}'});
+router.all('*', (req, res) => {
+    res.status(404).send({success: false, msg: 'board unknown uri ${req.path}'});
 })
-
-console.log("board에접근")
 
 module.exports = router;

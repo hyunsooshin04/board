@@ -1,8 +1,6 @@
 const router = require('express').Router();
 const board = require('./board'); //board router 호출
 
-console.log("api에 접근")
-
 router.all('*', (req, res, next) => {
     console.log("path=" + req.path);
     next();
