@@ -23,4 +23,4 @@ let dbcon = {
     }
 }
 
-module.exports = dbcon; //모듈 등록
+module.exports = dbcon;
