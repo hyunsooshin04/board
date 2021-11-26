@@ -34,27 +34,28 @@
 export default {
   data() {
     return {
-      board_code: 'news'
-      , subject: ''
-      , cont: ''
-      , id: 'admin'
-      , body: this.$route.query
-      , form: ''
-      , num: this.$route.query.num
+      board_code: 'board_list',
+      subject: '',
+      cont: '',
+      id: 'Guest',
+      body: this.$route.query,
+      form: '',
+      num: this.$route.query.num,
+      name: 'Guest'
     }
-  }
-  , mounted() {
+  },
+  mounted() {
     if (this.num) {
       this.fnGetView();
     }
-  }
-  , methods: {
+  },
+  methods: {
     fnList() {
       delete this.body.num;
       this.$router.push({path: './list', query: this.body});
 
-    }
-    , fnGetView() {
+    },
+    fnGetView() {
       this.$axios.get('http://localhost:3000/api/board/' + this.body.num, {params: this.body})
           .then((res) => {
             this.view = res.data.view[0];
@@ -64,11 +65,11 @@ export default {
           .catch((err) => {
             console.log(err);
           })
-    }
-    , fnView() {
+    },
+    fnView() {
       this.$router.push({path: './view', "query": this.body});
-    }
-    , fnAddProc() {
+    },
+    fnAddProc() {
       if (!this.subject) {
         alert("제목을 입력해 주세요");
         this.$refs.subject.focus();
@@ -76,10 +77,11 @@ export default {
       }
 
       this.form = {
-        board_code: this.board_code
-        , subject: this.subject
-        , cont: this.cont
-        , id: this.id
+        board_code: this.board_code,
+        subject: this.subject,
+        cont: this.cont,
+        id: this.id,
+        name: this.name
       }
 
       this.$axios.post('http://localhost:3000/api/board', this.form)
@@ -95,8 +97,8 @@ export default {
             console.log(err);
           })
 
-    }
-    , fnModProc() {
+    },
+    fnModProc() {
       if (!this.subject) {
         alert("제목을 입력해 주세요");
         this.$refs.subject.focus();
@@ -104,11 +106,11 @@ export default {
       }
 
       this.form = {
-        board_code: this.board_code
-        , subject: this.subject
-        , cont: this.cont
-        , id: this.id
-        , num: this.num
+        board_code: this.board_code,
+        subject: this.subject,
+        cont: this.cont,
+        id: this.id,
+        num: this.num
       }
 
       this.$axios.put('http://localhost:3000/api/board', this.form)
@@ -124,6 +126,13 @@ export default {
             console.log(err);
           })
     }
+  },
+  created: function () {
+    this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
+    // console.log(this.isLogin)
+    this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    // console.log(this.name)
   }
 }
 </script>

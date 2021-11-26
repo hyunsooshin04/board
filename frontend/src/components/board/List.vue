@@ -13,19 +13,22 @@
           <col width="6%"/>
           <col width="*"/>
           <col width="10%"/>
+          <col width="10%"/>
           <col width="15%"/>
           <col width="10%"/>
         </colgroup>
         <tr>
           <th>no</th>
           <th>제목</th>
+          <th>작성자</th>
           <th>아이디</th>
           <th>날짜</th>
           <th>조회수</th>
         </tr>
         <tr v-for="(row, idx) in list" :key="idx">
           <td>{{ no - idx }}</td>
-          <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{row.subject}}</a></td>
+          <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
+          <td>{{ row.name }}</td>
           <td>{{ row.id }}</td>
           <td>{{ row.regdate.substring(0, 10) }}</td>
           <td>{{ row.views }}</td>
@@ -72,6 +75,8 @@ export default {
       views: '',
       page: this.$route.query.page ? this.$route.query.page : 1,
       keyword: this.$route.query.keyword,
+      isLogin: '',
+      name: 'Guest',
 
       paginavigation: function () {
         var pageNumber = [];
@@ -88,9 +93,9 @@ export default {
   methods: {
     fnGetList() {
       this.body = {
-        board_code: this.board_code
-        , keyword: this.keyword
-        , page: this.page
+        board_code: this.board_code,
+        keyword: this.keyword,
+        page: this.page
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {
@@ -108,7 +113,7 @@ export default {
     },
     fnView(num) {
       this.body.num = num;
-      this.$router.push({path:'./view',query:this.body});
+      this.$router.push({path: './view', query: this.body});
     },
     fnAdd() {
       this.$router.push("./write");
@@ -132,6 +137,13 @@ export default {
         this.fnGetList();
       }
     }
+  },
+  created: function () {
+    this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
+    // console.log(this.isLogin)
+    // this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.id = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    // console.log(this.name)
   }
 }
 </script>

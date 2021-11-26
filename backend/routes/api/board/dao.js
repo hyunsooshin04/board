@@ -17,9 +17,8 @@ exports.list = (req, res) => {
     let start_page = 1;
     let end_page = block;
     let where = "";
-    let body = req.query; //get
-
-
+    let body = req.query;
+    let id = "";
     if (body.keyword) where += ` AND subject like '%${body.keyword}%' `;
     console.log("if문 실행.")
     sql = ` SELECT count(*) cnt
@@ -51,7 +50,7 @@ exports.list = (req, res) => {
                 ORDER BY num DESC LIMIT ?, ? `;
         conn.query(sql, [body.board_code, start, end], (err, list) => {
             if (err) throw err;
-
+            sql
             res.send({success: true, list: list, paging: paging});
         })
     })
@@ -94,9 +93,9 @@ exports.view = (req, res) => {
 
 exports.add = (req, res) => { //등록 프로세스 모듈
     body = req.body; //전송된 데이터를 받는다.
-    sql = " INSERT INTO  tb_board (board_code, subject, cont, id, regdate, views) values (?, ?, ?, ?,now(), 0) ";
+    sql = " INSERT INTO  tb_board (board_code, subject, cont, id, name, regdate, views) values (?, ?, ?, ?, ?,now(), 0) ";
     conn.query(sql,
-        [body.board_code, body.subject, body.cont, body.id],
+        [body.board_code, body.subject, body.cont, body.id, body.name],
         (err, result) => {
             if (err) throw err;
 
