@@ -11,7 +11,6 @@ var cors = require('cors'); //교차통신 모듈 호출
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -21,7 +20,6 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 
 var conn = db.init();  //db 모듈 커넥션 실행
 db.conn(conn); //db 연결 확인

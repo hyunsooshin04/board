@@ -14,18 +14,21 @@
           <col width="*"/>
           <col width="10%"/>
           <col width="15%"/>
+          <col width="10%"/>
         </colgroup>
         <tr>
           <th>no</th>
           <th>제목</th>
           <th>아이디</th>
           <th>날짜</th>
+          <th>조회수</th>
         </tr>
         <tr v-for="(row, idx) in list" :key="idx">
           <td>{{ no - idx }}</td>
-          <td class="txt_left"><a href="javascript:;">{{ row.subject }}</a></td>
+          <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{row.subject}}</a></td>
           <td>{{ row.id }}</td>
           <td>{{ row.regdate.substring(0, 10) }}</td>
+          <td>{{ row.views }}</td>
         </tr>
         <tr v-if="list.length == 0">
           <td colspan="4">데이터가 없습니다.</td>
@@ -60,15 +63,17 @@
 export default {
   data() { //변수생성
     return {
-      body: '' //리스트 페이지 데이터전송
-      , board_code: 'news' //게시판코드
-      , list: '' //리스트 데이터
-      , no: '' //게시판 숫자처리
-      , paging: '' //페이징 데이터
-      , start_page: '' //시작페이지
-      , page: this.$route.query.page ? this.$route.query.page : 1
-      , keyword: this.$route.query.keyword
-      , paginavigation: function () { //페이징 처리 for문 커스텀
+      body: '',
+      board_code: 'board_list',
+      list: '',
+      no: '',
+      paging: '',
+      start_page: '',
+      views: '',
+      page: this.$route.query.page ? this.$route.query.page : 1,
+      keyword: this.$route.query.keyword,
+
+      paginavigation: function () {
         var pageNumber = [];
         var start_page = this.paging.start_page;
         var end_page = this.paging.end_page;
@@ -76,13 +81,13 @@ export default {
         return pageNumber;
       }
     }
-  }
-  , mounted() { //페이지 시작하면은 자동 함수 실행
+  },
+  mounted() {
     this.fnGetList();
-  }
-  , methods: {
-    fnGetList() { //데이터 가져오기 함수
-      this.body = { // 데이터 전송
+  },
+  methods: {
+    fnGetList() {
+      this.body = {
         board_code: this.board_code
         , keyword: this.keyword
         , page: this.page
@@ -100,11 +105,15 @@ export default {
           .catch((err) => {
             console.log(err);
           })
-    }
-    , fnAdd() {
+    },
+    fnView(num) {
+      this.body.num = num;
+      this.$router.push({path:'./view',query:this.body});
+    },
+    fnAdd() {
       this.$router.push("./write");
-    }
-    , getList() {
+    },
+    getList() {
       this.$axios.get("http://localhost:3000/api/board")
           .then((res) => {
             console.log(res);
@@ -113,11 +122,11 @@ export default {
             console.log(err);
           })
     }
-    , fnSearch() { //검색
+    , fnSearch() {
       this.paging.page = 1;
       this.fnGetList();
     }
-    , fnPage(n) {//페이징 이
+    , fnPage(n) {
       if (this.page != n) {
         this.page = n;
         this.fnGetList();
@@ -160,6 +169,7 @@ export default {
 
 .tbList td.txt_left {
   text-align: left;
+  text-align: center;
 }
 
 .btnRightWrap {
@@ -183,10 +193,13 @@ export default {
   color: #333;
 }
 
-.pagination a {
+.pagination a, strong {
   text-decoration: none;
   display: inline-block;
   padding: 0 5px;
   color: #666;
+  margin: 10px;
+  border: 1px solid;
 }
+
 </style>
