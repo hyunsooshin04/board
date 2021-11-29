@@ -60,9 +60,8 @@ exports.myinfor = (req, res) => {
 exports.edit = (req, res) => {
     console.log("edit실행");
     console.log(req.body);
-    body = req.body;
-    sql = " UPDATE login_id SET cont = ? where = ?";
-    conn.query(sql, (req.body.msg, req.body.id), (err, log) => {
+    sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ? WHERE id = ?";
+    conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.id], (err, log) => {
         if (err) console.log(err);
 
     })
