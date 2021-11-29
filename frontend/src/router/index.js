@@ -53,6 +53,11 @@ const routes = [
         path: "/home/write",
         name: "HomeWrite",
         component: () => import('../components/HomeWrite')
+    },
+    {
+        path: "/myinformation",
+        name: "MyInformation",
+        component: () => import('../components/login/MyInformation')
     }
 ];
 

@@ -1,10 +1,18 @@
 <template>
   <div class="login">
-    <h1>로그인</h1><br>
-    Id : <input type="text" v-model="id"><br>
-    pw : <input type="password" v-model="password"><br>
-    <button v-on:click="login">로그인</button>
-    <button v-on:click="signup">회원가입</button>
+    <h1>로그인</h1>
+    <div class="login-form">
+      <form>
+        <input v-model="id" type="text" name="email" class="text-field" placeholder="아이디">
+        <input v-model="password" type="password" name="password" class="text-field" placeholder="비밀번호">
+        <input v-on:click="login" type="submit" value="로그인" class="submit-btn">
+      </form>
+
+      <div class="links">
+        <router-link to="./signup">회원가입하기</router-link><br>
+        <a href="#">비밀번호 찾기</a>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -64,7 +72,7 @@ export default {
         localStorage.setItem("name", this.name);
         localStorage.setItem("id", this.id);
 
-        location.href="http://localhost:8080/board/list"
+        location.href = "http://localhost:8080/board/list"
       }
       if (isLogin == 'id') alert("ID가 틀렸습니다.");
       if (isLogin == 'pwd') alert("Pw가 틀렸습니다.");
@@ -74,12 +82,53 @@ export default {
 </script>
 
 <style scoped>
-input {
-  margin: 5px;
-  padding: 5px;
+* {
+  box-sizing: border-box;
+  font-family: 'Noto Sans KR', sans-serif;
+  border-radius: 5px;
 }
-button {
-  margin: 5px;
-  font-size: 15px;
+
+body {
+  margin: 0;
+  background-color: #1BBC9B;
+}
+
+.login-form {
+  width: 300px;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: 50px;
+  padding: 20px;
+  text-align: center;
+  border: none;
+
+}
+
+.text-field {
+  font-size: 14px;
+  padding: 10px;
+  border: 1px solid;
+  width: 260px;
+  margin-bottom: 10px;
+
+}
+
+.submit-btn {
+  font-size: 14px;
+  border: none;
+  padding: 10px;
+  width: 260px;
+  background-color: #1BBC9B;
+  margin-bottom: 30px;
+  color: white;
+}
+
+.links {
+  text-align: center;
+}
+
+.links a {
+  font-size: 12px;
+  color: #9B9B9B;
 }
 </style>

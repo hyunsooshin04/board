@@ -30,7 +30,7 @@ exports.signup = (req, res) => {
         try {
             console.log(log[0].id)
             check = false;
-            res.send({success: false});
+            res.send({success: "id_overlap"});
         } catch (e) {
             check = true;
         }
@@ -39,12 +39,20 @@ exports.signup = (req, res) => {
             console.log(req.params.id + req.params.pwd + req.params.name)
             conn.query(sql, [req.params.id, req.params.pwd, req.params.name], (err, req) => {
                 try {
-                    res.send({success: true});
+                    res.send({success: "signup_success"});
                 } catch (e) {
-                    res.send({success: false});
+                    res.send({success: "error"});
                 }
             })
         }
     })
+}
 
+exports.myinfor = (req, res) => {
+    sql = " SELECT * FROM login_id WHERE id = ?";
+    conn.query(sql, (req.params.id), (err, log) => {
+        if (err) console.log(err);
+        console.log(log[0].gender)
+        res.send({gender: log[0].gender, hobby: log[0].hobby, city: log[0].city, cont: log[0].cont})
+    })
 }

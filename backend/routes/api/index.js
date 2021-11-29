@@ -6,6 +6,8 @@ router.all('*', (req, res, next) => {
     next();
 })
 
+router.get("/myinfo/:id", lg.myinfor)
+
 router.get("/signup/:id/:pwd/:name", lg.signup)
 
 router.get("/login/:id/:password", lg.login)

@@ -9,6 +9,7 @@ router.get('/', function (req, res, next) {
 
 router.post("/login", )
 
+
 router.use("/api", api); //api router 적용
 
 router.all('/', (req, res) => {

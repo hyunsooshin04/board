@@ -10,7 +10,7 @@
         <li v-if="isLogin"><label for="menu-toggle">{{ name }} 님</label>
           <input type="checkbox" id="menu-toggle" />
           <ul id="menu"><br>
-            <li><a href="#">내정보</a></li><br>
+            <li><router-link to="/myinformation">내정보</router-link></li><br>
             <li><a href="#">내정보 수정</a></li><br>
             <li><router-link to="/logout">로그아웃</router-link></li>
           </ul></li>
@@ -81,14 +81,14 @@ label {
   display: none; /* hide the checkbox */
 }
 #menu {
+  padding-top: 10px;
   display: none;
   list-style: none;
   width: auto;
   position: absolute;
-
 }
 #menu li {
-  background-color: skyblue;
+  /*background-color: skyblue;*/
   width: 50px;
 }
 #menu-toggle:checked + #menu {
