@@ -6,11 +6,13 @@ router.all('*', (req, res, next) => {
     next();
 })
 
-router.get("/myinfo/:id", lg.myinfor)
+router.get("/myinfo/:id", lg.myinfor);
 
-router.get("/signup/:id/:pwd/:name", lg.signup)
+router.post("/edit/", lg.edit)
 
-router.get("/login/:id/:password", lg.login)
+router.get("/signup/:id/:pwd/:name", lg.signup);
+
+router.get("/login/:id/:password", lg.login);
 
 router.use("/board", board); //board router 적용
 

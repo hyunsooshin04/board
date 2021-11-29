@@ -53,6 +53,18 @@ exports.myinfor = (req, res) => {
     conn.query(sql, (req.params.id), (err, log) => {
         if (err) console.log(err);
         console.log(log[0].gender)
-        res.send({gender: log[0].gender, hobby: log[0].hobby, city: log[0].city, cont: log[0].cont})
+        res.send({gender: log[0].gender, hobby: log[0].hobby, city: log[0].city, cont: log[0].cont, pwd: log[0].pwd})
     })
+}
+
+exports.edit = (req, res) => {
+    console.log("edit실행");
+    console.log(req.body);
+    body = req.body;
+    sql = " UPDATE login_id SET cont = ? where = ?";
+    conn.query(sql, (req.body.msg, req.body.id), (err, log) => {
+        if (err) console.log(err);
+
+    })
+
 }

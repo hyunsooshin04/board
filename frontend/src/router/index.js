@@ -58,6 +58,11 @@ const routes = [
         path: "/myinformation",
         name: "MyInformation",
         component: () => import('../components/login/MyInformation')
+    },
+    {
+        path: "/editinfo",
+        name: "EditInfo",
+        component: () => import('../components/login/EditInfo')
     }
 ];
 

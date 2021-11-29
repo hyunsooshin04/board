@@ -11,7 +11,7 @@
           <input type="checkbox" id="menu-toggle" />
           <ul id="menu"><br>
             <li><router-link to="/myinformation">내정보</router-link></li><br>
-            <li><a href="#">내정보 수정</a></li><br>
+            <li><router-link to="/editinfo">내정보 수정</router-link></li><br>
             <li><router-link to="/logout">로그아웃</router-link></li>
           </ul></li>
       </ul>
