@@ -208,9 +208,8 @@ export default {
 .pagination a, strong {
   text-decoration: none;
   display: inline-block;
-  padding: 0 5px;
+  padding: 5px;
   color: #666;
-  margin: 10px;
   border: 1px solid;
 }
 

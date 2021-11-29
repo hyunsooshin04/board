@@ -1,133 +1,216 @@
 <template>
-  <div class="hello">
-    <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br/>
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-      >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-            href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-            target="_blank"
-            rel="noopener"
-        >babel</a
-        >
-      </li>
-      <li>
-        <a
-            href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router"
-            target="_blank"
-            rel="noopener"
-        >router</a
-        >
-      </li>
-      <li>
-        <a
-            href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex"
-            target="_blank"
-            rel="noopener"
-        >vuex</a
-        >
-      </li>
-      <li>
-        <a
-            href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-            target="_blank"
-            rel="noopener"
-        >eslint</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-        >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-        >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-        >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-        >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-            href="https://github.com/vuejs/vue-devtools#vue-devtools"
-            target="_blank"
-            rel="noopener"
-        >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-        >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-            href="https://github.com/vuejs/awesome-vue"
-            target="_blank"
-            rel="noopener"
-        >awesome-vue</a
-        >
-      </li>
-    </ul>
+  <div>
+    <h2>공지사항</h2>
+
+    <div class="searchWrap">
+      <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
+                                                                       class="btnSearch btn">검색</a>
+    </div>
+
+    <div class="listWrap">
+      <table class="tbList">
+        <colgroup>
+          <col width="6%"/>
+          <col width="*"/>
+          <col width="10%"/>
+          <col width="10%"/>
+          <col width="15%"/>
+          <col width="10%"/>
+        </colgroup>
+        <tr>
+          <th>no</th>
+          <th>제목</th>
+          <th>작성자</th>
+          <th>아이디</th>
+          <th>날짜</th>
+          <th>조회수</th>
+        </tr>
+        <tr v-for="(row, idx) in list" :key="idx">
+          <td>{{ no - idx }}</td>
+          <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
+          <td>{{ row.name }}</td>
+          <td>{{ row.id }}</td>
+          <td>{{ row.regdate.substring(0, 10) }}</td>
+          <td>{{ row.views }}</td>
+        </tr>
+        <tr v-if="list.length == 0">
+          <td colspan="4">데이터가 없습니다.</td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="pagination" v-if="paging.totalCount > 0">
+      <a href="javascript:;" @click="fnPage(1)" class="first">&lt;&lt;</a>
+      <a href="javascript:;" v-if="paging.start_page > 10" @click="fnPage(`${paging.start_page-1}`)"
+         class="prev">&lt;</a>
+      <template v-for=" (n,index) in paginavigation()">
+        <template v-if="paging.page == n">
+          <strong :key="index">{{ n }}</strong>
+        </template>
+        <template v-else>
+          <a href="javascript:;" @click="fnPage(`${n}`)" :key="index">{{ n }}</a>
+        </template>
+      </template>
+      <a href="javascript:;" v-if="paging.total_page > paging.end_page" @click="fnPage(`${paging.end_page+1}`)"
+         class="next">&gt;</a>
+      <a href="javascript:;" @click="fnPage(`${paging.total_page}`)" class="last">&gt;&gt;</a>
+    </div>
+
+    <div class="btnRightWrap">
+      <a @click="fnAdd" class="btn">등록</a>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: "HelloWorld",
-  props: {
-    msg: String,
+  data() { //변수생성
+    return {
+      body: '',
+      board_code: 'Home_list',
+      list: '',
+      no: '',
+      paging: '',
+      start_page: '',
+      views: '',
+      page: this.$route.query.page ? this.$route.query.page : 1,
+      keyword: this.$route.query.keyword,
+      isLogin: '',
+      name: 'Guest',
+
+      paginavigation: function () {
+        var pageNumber = [];
+        var start_page = this.paging.start_page;
+        var end_page = this.paging.end_page;
+        for (var i = start_page; i <= end_page; i++) pageNumber.push(i);
+        return pageNumber;
+      }
+    }
   },
-};
+  mounted() {
+    this.fnGetList();
+  },
+  methods: {
+    fnGetList() {
+      this.body = {
+        board_code: this.board_code,
+        keyword: this.keyword,
+        page: this.page
+      }
+      this.$axios.get('http://localhost:3000/api/board', {params: this.body})
+          .then((res) => {
+            if (res.data.success) {
+              this.list = res.data.list;
+              this.paging = res.data.paging;
+              this.no = this.paging.totalCount - ((this.paging.page - 1) * this.paging.ipp);
+            } else {
+              alert("실행중 실패했습니다.\n다시 이용해 주세요.");
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          })
+    },
+    fnView(num) {
+      this.body.num = num;
+      this.$router.push({path: '/board/view', query: this.body});
+    },
+    fnAdd() {
+      this.$router.push("/home/write");
+    },
+    getList() {
+      this.$axios.get("http://localhost:3000/api/board")
+          .then((res) => {
+            console.log(res);
+          })
+          .then((err) => {
+            console.log(err);
+          })
+    }
+    , fnSearch() {
+      this.paging.page = 1;
+      this.fnGetList();
+    }
+    , fnPage(n) {
+      if (this.page != n) {
+        this.page = n;
+        this.fnGetList();
+      }
+    }
+  },
+  created: function () {
+    this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
+    // console.log(this.isLogin)
+    // this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.id = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    // console.log(this.name)
+  }
+}
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
+.searchWrap {
+  border: 1px solid #888;
+  border-radius: 5px;
+  text-align: center;
+  padding: 20px 0;
+  margin-bottom: 40px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
+.searchWrap input {
+  width: 60%;
+  height: 36px;
+  border-radius: 3px;
+  padding: 0 10px;
+  border: 1px solid #888;
 }
 
-li {
+.searchWrap .btnSearch {
   display: inline-block;
-  margin: 0 10px;
+  margin-left: 10px;
 }
 
-a {
-  color: #42b983;
+.tbList th {
+  border-top: 1px solid #888;
 }
+
+.tbList th, .tbList td {
+  border-bottom: 1px solid #eee;
+  padding: 5px 0;
+}
+
+.tbList td.txt_left {
+  text-align: left;
+  text-align: center;
+}
+
+.btnRightWrap {
+  text-align: right;
+  margin: 10px 0 0 0;
+}
+
+.pagination {
+  margin: 20px 0 0 0;
+  text-align: center;
+}
+
+.first, .prev, .next, .last {
+  border: 1px solid #666;
+  margin: 0 5px;
+}
+
+.pagination span {
+  display: inline-block;
+  padding: 0 5px;
+  color: #333;
+}
+
+.pagination a, strong {
+  text-decoration: none;
+  display: inline-block;
+  padding: 5px;
+  color: #666;
+  border: 1px solid;
+}
+
 </style>

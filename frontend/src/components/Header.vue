@@ -1,11 +1,19 @@
 <template>
   <header>
-    <h1><a href="#" class="logo"><img alt="Vue logo" src="../assets/logo.png" width="80"></a></h1>
+    <h1>게시판</h1>
     <div class="menuWrap">
       <ul class="menu">
+        <li><router-link to="/">홈</router-link></li>
         <li><router-link to="/board/list">게시판</router-link></li>
         <li v-if="!isLogin"><router-link to="/login">로그인</router-link></li>
-        <li v-if="isLogin"><router-link to="/logout">로그아웃</router-link></li>
+<!--        <li v-if="isLogin"><router-link to="/logout">로그아웃</router-link></li>-->
+        <li v-if="isLogin"><label for="menu-toggle">{{ name }} 님</label>
+          <input type="checkbox" id="menu-toggle" />
+          <ul id="menu"><br>
+            <li><a href="#">내정보</a></li><br>
+            <li><a href="#">내정보 수정</a></li><br>
+            <li><router-link to="/logout">로그아웃</router-link></li>
+          </ul></li>
       </ul>
 
     </div>
@@ -35,7 +43,7 @@ header {
   width: 100%;
   text-align: center;
   position: relative;
-  height: 120px;
+  height: 10vh;
   border-bottom: 1px solid #35495e
 }
 
@@ -53,7 +61,6 @@ header ul.menu:after {
 
 header ul.menu {
   position: absolute;
-  top: 20px;
   right: 50px;
 }
 
@@ -66,5 +73,25 @@ header ul.menu li {
 a {
   text-decoration: none;
   color: #333;
+}
+label {
+  cursor: pointer;
+}
+#menu-toggle {
+  display: none; /* hide the checkbox */
+}
+#menu {
+  display: none;
+  list-style: none;
+  width: auto;
+  position: absolute;
+
+}
+#menu li {
+  background-color: skyblue;
+  width: 50px;
+}
+#menu-toggle:checked + #menu {
+  display: block;
 }
 </style>
