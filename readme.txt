@@ -23,6 +23,8 @@ CREATE TABLE `login_id` (
    `hobby` text,
    `gender` varchar(20),
    `city` char(20),
+   `question` varchar(20),
+   `answer` varchar(10),
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
