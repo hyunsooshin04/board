@@ -20,7 +20,6 @@ exports.list = (req, res) => {
     let body = req.query;
     let id = "";
     if (body.keyword) where += ` AND subject like '%${body.keyword}%' `;
-    console.log("if문 실행.")
     sql = ` SELECT count(*) cnt
             FROM tb_board
             WHERE board_code = ? ${where} `;

@@ -32,7 +32,8 @@ export default {
     }
   },
   methods: {
-    signup() {
+    signup(e) {
+      e.preventDefault();
       if (this.name == '') alert("이름을 입력해주세요.");
       else if (this.id == '') alert("아이디를 입력해주세요.");
       else if (this.pwd == '') alert("비밀번호를 입력해주세요.");
@@ -42,7 +43,7 @@ export default {
         this.$axios.get('http://localhost:3000/api/signup/' + this.id + "/" + this.pwd + "/" + this.name)
             .then((res) => {
               this.message = res.data.success;
-              if (this.message == "signup_success") {
+              if (this.message == "ok") {
                 alert("회원가입 성공");
                 location.href = "http://localhost:8080/login";
               } else if (this.message == "id_overlap") {

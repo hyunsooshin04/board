@@ -30,6 +30,7 @@
   </div>
 </template>
 
+
 <script>
 export default {
   data() {
@@ -53,8 +54,6 @@ export default {
       window.open(url, "", popupOption);
     },
     fnGetView() {
-      console.log(this.body.num);
-      console.log(this.body);
       this.$axios.get('http://localhost:3000/api/board/' + this.body.num, {params: this.body})
           .then((res) => {
             this.view = res.data.view[0];

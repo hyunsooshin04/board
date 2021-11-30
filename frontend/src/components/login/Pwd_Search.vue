@@ -38,6 +38,7 @@ export default {
       this.$axios.get('http://localhost:3000/api/login/' + this.id)
           .then((res) => {
             if (res.data.isId == false) alert("존재하지 않는 아이디 입니다.");
+            else if (res.data.isId == "null") alert("본인 확인 질문이 존재하지 않습니다.");
             else {
               this.question = res.data.msg;
               this.ck = !this.ck;

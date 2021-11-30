@@ -78,6 +78,8 @@ export default {
   },
   methods: {
     edit() {
+      if (this.question == '') this.question = null;
+      if (this.answer == '') this.answer = null;
       this.form = {
         name: this.name,
         id: this.id,
@@ -87,11 +89,14 @@ export default {
         hobby: this.hobby,
         city: this.city,
         question: this.question,
-        answer: this.answer,
+        answer: this.question == null ? null : this.answer,
       }
       this.$axios.post('http://localhost:3000/api/edit', this.form)
       .then((res) => {
-        if (res.data.edit == true) alert("수정이 완료되었습니다.");
+        if (res.data.edit == true) {
+          alert("수정이 완료되었습니다.");
+          location.href = "http://localhost:8080/editinfo";
+        }
       })
     }
   },
@@ -105,6 +110,8 @@ export default {
           this.hobby = res.data.hobby;
           this.city = res.data.city;
           this.pwd = res.data.pwd;
+          this.question = res.data.msg;
+          this.answer = res.data.answer;
         })
   }
 }

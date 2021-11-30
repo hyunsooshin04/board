@@ -35,14 +35,9 @@ exports.signup = (req, res) => {
             check = true;
         }
         if (check) {
-            sql = " INSERT INTO  login_id (id, pwd, name ) values (?, ?, ?)";
-            console.log(req.params.id + req.params.pwd + req.params.name)
-            conn.query(sql, [req.params.id, req.params.pwd, req.params.name], (err, req) => {
-                try {
-                    res.send({success: "signup_success"});
-                } catch (e) {
-                    res.send({success: "error"});
-                }
+            sql = " INSERT INTO  login_id (id, pwd, name, gender) values (?, ?, ?, ?)";
+            conn.query(sql, [req.params.id, req.params.pwd, req.params.name, "미설정"], (err, req) => {
+                res.send({success: "ok"});
             })
         }
     })
@@ -52,8 +47,15 @@ exports.myinfor = (req, res) => {
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
         if (err) console.log(err);
-        console.log(log[0].gender)
-        res.send({gender: log[0].gender, hobby: log[0].hobby, city: log[0].city, cont: log[0].cont, pwd: log[0].pwd})
+        res.send({
+            gender: log[0].gender,
+            hobby: log[0].hobby,
+            city: log[0].city,
+            cont: log[0].cont,
+            pwd: log[0].pwd,
+            msg: log[0].question,
+            answer: log[0].answer
+        })
     })
 }
 
@@ -73,7 +75,8 @@ exports.pwsearch = (req, res) => {
         if (err) console.log(err);
         if (log == '') res.send({isId: false})
         else {
-            res.send({idId: true, msg: log[0].question})
+            if (log[0].question == null) res.send({isId: "null"});
+            else res.send({isId: true, msg: log[0].question})
         }
     })
 }
@@ -89,8 +92,7 @@ exports.editpwd = (req, res) => {
                 if (err) console.log(err);
                 res.send({check: true});
             })
-        }
-        else {
+        } else {
             res.send({check: false});
         }
     })

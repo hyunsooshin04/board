@@ -30,7 +30,8 @@ export default {
     }
   },
   methods: {
-    login() {
+    login(e) {
+      e.preventDefault();
       if (this.id == "") {
         alert("아이디를 입력해주세요.")
       } else if (this.pwd == "") {
