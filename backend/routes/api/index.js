@@ -14,6 +14,10 @@ router.get("/signup/:id/:pwd/:name", lg.signup);
 
 router.get("/login/:id/:password", lg.login);
 
+router.get("/login/:id", lg.pwsearch);
+
+router.get("/login/:id/:answer/:pwd", lg.editpwd);
+
 router.use("/board", board); //board router 적용
 
 router.all('*', (req, res) => {

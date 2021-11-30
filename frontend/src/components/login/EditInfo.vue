@@ -43,9 +43,18 @@
         <th scope="row">지역</th>
         <td><input style="width: 16rem" type="text" v-model="city"></td>
       </tr>
+      <tr>
+        <th scope="row">본인확인 질문</th>
+        <td><input style="width: 16rem" type="text" v-model="question" placeholder="최대 20자"></td>
+      </tr>
+      <tr>
+        <th scope="row">본인확인 답</th>
+        <td><input style="width: 16rem" type="text" v-model="answer" placeholder="최대 10자"></td>
+      </tr>
       </tbody>
     </table><br>
-    <button v-on:click="edit">수정하기</button>
+    <button v-on:click="edit">수정하기</button><br><br>
+    <span style="color: grey;">본인확인 질문과 본인확인 답이 없으면 비밀번호 찾기를 사용하실수 없습니다.</span>
   </div>
 </template>
 
@@ -63,6 +72,8 @@ export default {
       city: '미설정',
       pwd: '',
       form: '',
+      question: '',
+      answer: '',
     }
   },
   methods: {
@@ -75,8 +86,13 @@ export default {
         gender: this.gender,
         hobby: this.hobby,
         city: this.city,
+        question: this.question,
+        answer: this.answer,
       }
-      this.$axios.post('http://localhost:3000/api/edit', this.form);
+      this.$axios.post('http://localhost:3000/api/edit', this.form)
+      .then((res) => {
+        if (res.data.edit == true) alert("수정이 완료되었습니다.");
+      })
     }
   },
   created: function () {

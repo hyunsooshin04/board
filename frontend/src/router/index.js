@@ -63,6 +63,11 @@ const routes = [
         path: "/editinfo",
         name: "EditInfo",
         component: () => import('../components/login/EditInfo')
+    },
+    {
+        path: "/login/pwd_search",
+        name: "PwdSearch",
+        component: () => import('../components/login/Pwd_Search')
     }
 ];
 

@@ -10,7 +10,7 @@
 
       <div class="links">
         <router-link to="./signup">회원가입하기</router-link><br>
-        <a href="#">비밀번호 찾기</a>
+        <router-link to="/login/pwd_search">비밀번호 찾기</router-link>
       </div>
     </div>
   </div>

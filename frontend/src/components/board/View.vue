@@ -23,6 +23,7 @@
 
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
+<!--      <a href="javascript:;" @click="popupOpen" class="btn">댓글</a>-->
       <a href="javascript:;" @click="fnMod" class="btnAdd btn">수정</a>
       <a v-if="num" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn">삭제</a>
     </div>
@@ -44,6 +45,13 @@ export default {
     this.fnGetView();
   },
   methods: {
+    popupOpen() {
+      var url = "/orderController/modiftCartPopup";    //팝업창 페이지 URL
+      var winWidth = 700;
+      var winHeight = 600;
+      var popupOption = "width=" + winWidth + ", height=" + winHeight;    //팝업창 옵션(optoin)
+      window.open(url, "", popupOption);
+    },
     fnGetView() {
       console.log(this.body.num);
       console.log(this.body);
@@ -56,17 +64,20 @@ export default {
           .catch((err) => {
             console.log(err);
           })
-    },
+    }
+    ,
     fnList() {
       delete this.body.num;
       this.$router.push({path: './list', query: this.body});
-    },
+    }
+    ,
     fnMod() {
       this.$router.push({path: './write', query: this.body});
-    },
+    }
+    ,
     fnDeleteProc() {
       if (confirm("삭제하시겠습니까?")) {
-        this.$axios.delete('http://localhost:3000/api/board/' ,{params: this.body})
+        this.$axios.delete('http://localhost:3000/api/board/', {params: this.body})
             .then((res) => {
               if (res.data.result) {
                 alert("삭제되었습니다.");

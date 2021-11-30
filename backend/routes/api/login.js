@@ -60,10 +60,38 @@ exports.myinfor = (req, res) => {
 exports.edit = (req, res) => {
     console.log("edit실행");
     console.log(req.body);
-    sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ? WHERE id = ?";
-    conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.id], (err, log) => {
+    sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ?, question = ?, answer = ? WHERE id = ?";
+    conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.question, req.body.answer, req.body.id], (err, log) => {
         if (err) console.log(err);
-
+        res.send({edit: true})
     })
+}
 
+exports.pwsearch = (req, res) => {
+    sql = " SELECT * FROM login_id WHERE id = ?";
+    conn.query(sql, (req.params.id), (err, log) => {
+        if (err) console.log(err);
+        if (log == '') res.send({isId: false})
+        else {
+            res.send({idId: true, msg: log[0].question})
+        }
+    })
+}
+
+exports.editpwd = (req, res) => {
+    console.log(req.params);
+    sql = " SELECT * FROM login_id WHERE id = ?";
+    conn.query(sql, (req.params.id), (err, log) => {
+        if (err) console.log(err);
+        if (log[0].answer == req.params.answer) {
+            sql = " UPDATE login_id SET pwd = ? WHERE id = ?";
+            conn.query(sql, [req.params.pwd, req.params.id], (err, log) => {
+                if (err) console.log(err);
+                res.send({check: true});
+            })
+        }
+        else {
+            res.send({check: false});
+        }
+    })
 }

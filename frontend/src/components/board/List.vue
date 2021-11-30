@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>게시판 리스트</h2>
+    <h2>자유 게시판</h2>
 
     <div class="searchWrap">
       <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
