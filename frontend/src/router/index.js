@@ -73,6 +73,16 @@ const routes = [
         path: "/board/view/comment",
         name: "comment",
         component: () => import('../components/board/comment')
+    },
+    {
+        path: "/board/user/list",
+        name: "userlist",
+        component: () => import('../components/UserList')
+    },
+    {
+        path: "/board/user/view",
+        name: "userinfo",
+        component: () => import('../components/Userinfomation')
     }
 ];
 

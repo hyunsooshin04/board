@@ -1,4 +1,5 @@
 const db = require('../../../config/db');
+const {parse} = require("nodemon/lib/cli");
 
 const conn = db.init();
 
@@ -112,9 +113,34 @@ exports.comment = (req, res) => {
 
 exports.getcomment = (req, res) => {
     console.log(req.params.num);
-    sql = " SELECT * FROM comment WHERE num = ?";
+    sql = " SELECT * FROM comment WHERE num = ? ORDER BY no";
     conn.query(sql, (req.params.num), (err, log) => {
         if (err) console.log(err);
         res.send({list: log});
+    })
+}
+
+exports.del_comment = (req, res) => {
+    sql = " DELETE FROM comment WHERE no = ?";
+    conn.query(sql, (req.params.no), (err, log) => {
+        if (err) console.log(err);
+        res.send({del: "ok"})
+    })
+}
+
+exports.update_comment = (req, res) => {
+    sql = " UPDATE comment SET comment = ?, editdate = now() WHERE no = ?";
+    conn.query(sql, [req.params.comment, req.params.no], (err, log) => {
+        if (err) console.log(err);
+        console.log("ok")
+        res.send({update: "ok"});
+    })
+}
+
+exports.userlist = (req, res) => {
+    sql = " SELECT * FROM login_id";
+    conn.query(sql, (err, log) => {
+        if (err) console.log(err);
+        res.send({list: log})
     })
 }

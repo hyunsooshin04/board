@@ -15,6 +15,12 @@ router.post("/comment", dao.comment)
 
 router.get("/comment/get/:num", dao.getcomment)
 
+router.get("/comment/del/:no", dao.del_comment)
+
+router.get("/comment/update/:comment/:no", dao.update_comment)
+
+router.get("/user/list", dao.userlist)
+
 router.all('*',(req, res)=> {
     res.status(404).send({success:false, msg:'board unknown uri ${req.path}'});
 })

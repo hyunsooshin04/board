@@ -82,7 +82,6 @@ exports.pwsearch = (req, res) => {
 }
 
 exports.editpwd = (req, res) => {
-    console.log(req.params);
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
         if (err) console.log(err);
@@ -95,5 +94,14 @@ exports.editpwd = (req, res) => {
         } else {
             res.send({check: false});
         }
+    })
+}
+
+exports.userinfo = (req, res) => {
+    sql = " SELECT * FROM login_id WHERE id = ?";
+    conn.query(sql, (req.params.id), (err, log) => {
+        if (err) console.log(err);
+        console.log(log)
+        res.send({name: log[0].name, cont: log[0].cont, hobby: log[0].hobby, gender: log[0].gender, city: log[0].city})
     })
 }

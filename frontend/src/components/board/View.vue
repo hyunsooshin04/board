@@ -32,6 +32,7 @@
         <button id="submit" v-on:click="CommentPush">등록</button>
       </div>
       <h2>댓글 목록</h2>
+      <h3 v-if="comment_cnt == 0">댓글이 없습니다.</h3>
       <table v-for="(list, index) in list" v-bind:key="index">
         <colgroup>
           <col width="35%">
@@ -39,10 +40,19 @@
         </colgroup>
         <tr id="top">
           <td>
-            <h3 v-bind:key="index">{{ list.name + "(" + list.id + ")" }}</h3>
+            <h3 v-bind:key="index">{{ list.name + "(" + list.id + ")" }}
+              <button id="delbtn" v-on:click="del_comment('' + list.no)">삭제</button>
+              <button id="editinputbtn" v-on:click="input_update(`` + list.no)" style="display: inline">수정하기</button>
+            </h3>
             <h4>{{ list.comment }}</h4>
-            {{ list.regdate.substring(0, 10) }}
-            {{ list.regdate.substring(11, 19) }}
+            <span v-bind:id="list.no" class="see" style="display: none">
+              <input id="editinput" type="text" v-model="edit_comment">
+              <button id="editbtn" v-on:click="update_comment('' + list.no)">완료</button><br>
+            </span>
+            <span>작성 시간 : {{ list.regdate.substring(0, 10) }} {{ list.regdate.substring(11, 19) }}</span>
+            <span v-if="!list.editdate == ''" style="padding-left: 50px">
+              수정한 시각 : {{ list.editdate.substring(0, 10) }} {{ list.editdate.substring(11, 19) }}
+            </span>
           </td>
         </tr>
       </table>
@@ -65,7 +75,10 @@ export default {
       name: '',
       comment: '',
       list: '',
-      comment_cnt: ''
+      comment_cnt: '',
+      del_num: '',
+      edit_comment: '',
+      see: false,
     }
   },
   mounted() {
@@ -73,6 +86,43 @@ export default {
     this.CommentGet();
   },
   methods: {
+    input_update(id) {
+      let see = document.getElementsByClassName("see");
+      for (let i = 0; i < see.length; i++) {
+        let see1 = see.item(i);
+        see1.style.display = "none";
+      }
+      this.edit_comment = '';
+      this.see = !this.see;
+      if (this.see) {
+        document.getElementById(`` + id).style.display = "inline";
+      } else {
+        document.getElementById(`` + id).style.display = "none";
+      }
+    },
+    update_comment(id) {
+      this.$axios.get('http://localhost:3000/api/board/comment/update/' + this.edit_comment + "/" + id)
+          .then((res) => {
+            if (res.data.update == "ok") {
+              alert("수정 완료");
+              this.CommentGet();
+              this.input_update(`` + id);
+            }
+          })
+    },
+    del_comment(id) {
+      let confirmdel = confirm("삭제 하시겠습니까?");
+
+      if (confirmdel) {
+        this.$axios.get('http://localhost:3000/api/board/comment/del/' + id)
+            .then((res) => {
+              if (res.data.del == "ok") {
+                alert("삭제되었습니다.");
+                this.CommentGet();
+              }
+            })
+      } else alert("삭제가 취소되었습니다.");
+    },
     CommentGet() {
       this.$axios.get('http://localhost:3000/api/board/comment/get/' + this.num)
           .then((res) => {
@@ -93,7 +143,8 @@ export default {
             .then((res) => {
               if (res.data.ok == "ok") {
                 alert("댓글이 추가 되었습니다.");
-                location.reload();
+                this.CommentGet();
+                this.comment = '';
               }
             })
       }
@@ -198,6 +249,7 @@ h4 {
 
 #comment table {
   width: 100%;
+  padding: 100px;
 }
 
 #comment tr {
@@ -234,5 +286,27 @@ h4 {
 
 .btnDelete {
   background: #f00;
+}
+
+button {
+  margin: 5px;
+}
+
+#delbtn {
+  background-color: crimson;
+  color: white;
+  border: none;
+}
+
+#editinputbtn {
+  background-color: #1BBC9B;
+  color: white;
+  border: none;
+}
+
+#editbtn {
+  background-color: #1BBC9B;
+  color: white;
+  border: none;
 }
 </style>

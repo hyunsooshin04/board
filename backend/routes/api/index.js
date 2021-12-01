@@ -18,6 +18,8 @@ router.get("/login/:id", lg.pwsearch);
 
 router.get("/login/:id/:answer/:pwd", lg.editpwd);
 
+router.get("/userinfo/:id", lg.userinfo)
+
 router.use("/board", board); //board router 적용
 
 router.all('*', (req, res) => {

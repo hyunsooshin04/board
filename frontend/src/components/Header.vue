@@ -17,6 +17,9 @@
           <input type="checkbox" id="menu-toggle"/>
           <ul id="menu"><br>
             <li>
+              <router-link to="/board/user/list">유저 리스트</router-link>
+            </li>
+            <li>
               <router-link to="/myinformation">내정보</router-link>
             </li>
             <br>
@@ -25,7 +28,7 @@
             </li>
             <br>
             <li>
-              <router-link to="/logout">로그아웃</router-link>
+              <a href="http://localhost:8080/" v-on:click="logout">로그아웃</a>
             </li>
           </ul>
         </li>
@@ -42,6 +45,14 @@ export default {
     return {
       isLogin: "false",
       name: "Guest",
+    }
+  },
+  methods: {
+    logout() {
+      localStorage.removeItem("isLogin");
+      localStorage.removeItem("name");
+      localStorage.removeItem("id");
+      location.href = "http://localhost:8080"
     }
   },
   created: function () {
@@ -107,7 +118,6 @@ label {
 }
 
 #menu li {
-  /*background-color: skyblue;*/
   width: 50px;
 }
 

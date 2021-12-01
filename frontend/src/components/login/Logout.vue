@@ -11,7 +11,7 @@ export default {
     localStorage.removeItem("isLogin");
     localStorage.removeItem("name");
     localStorage.removeItem("id");
-    location.href = "http://localhost:8080/board/list"
+    location.href = "http://localhost:8080"
   }
 }
 </script>
