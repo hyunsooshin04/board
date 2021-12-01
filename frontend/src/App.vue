@@ -1,11 +1,9 @@
 <template>
   <div id="app">
     <Header/>
-
     <div class="container"> <!-- class 추가 -->
       <router-view/>
     </div>
-
     <Footer/>
   </div>
 </template>

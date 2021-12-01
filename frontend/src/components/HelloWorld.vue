@@ -1,12 +1,10 @@
 <template>
   <div>
     <h2>공지사항</h2>
-
     <div class="searchWrap">
       <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
                                                                        class="btnSearch btn">검색</a>
     </div>
-
     <div class="listWrap">
       <table class="tbList">
         <colgroup>

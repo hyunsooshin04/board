@@ -67,9 +67,9 @@ exports.mod = (req, res) => {
 exports.delete = (req, res) => {
     body = req.query;
     sql = " DELETE FROM tb_board WHERE num = ? ";
-    conn.query(sql,[body.num],(err,result) => {
-        if(err) throw err;
-        res.send({success:true,result:result});
+    conn.query(sql, [body.num], (err, result) => {
+        if (err) throw err;
+        res.send({success: true, result: result});
     })
 }
 
@@ -100,4 +100,21 @@ exports.add = (req, res) => { //등록 프로세스 모듈
 
             res.send({success: true});
         })
+}
+
+exports.comment = (req, res) => {
+    sql = " INSERT INTO comment (id, name, comment, regdate, num) values(?, ?, ?, now(), ?)";
+    conn.query(sql, [req.body.id, req.body.name, req.body.comment, req.body.num], (err, log) => {
+        if (err) console.log(err);
+        res.send({ok: "ok"});
+    })
+}
+
+exports.getcomment = (req, res) => {
+    console.log(req.params.num);
+    sql = " SELECT * FROM comment WHERE num = ?";
+    conn.query(sql, (req.params.num), (err, log) => {
+        if (err) console.log(err);
+        res.send({list: log});
+    })
 }

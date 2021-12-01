@@ -141,8 +141,8 @@ export default {
   created: function () {
     this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
     // console.log(this.isLogin)
-    // this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
-    this.id = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
     // console.log(this.name)
   }
 }

@@ -10,6 +10,7 @@ export default {
   created: function () {
     localStorage.removeItem("isLogin");
     localStorage.removeItem("name");
+    localStorage.removeItem("id");
     location.href = "http://localhost:8080/board/list"
   }
 }

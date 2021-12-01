@@ -68,6 +68,11 @@ const routes = [
         path: "/login/pwd_search",
         name: "PwdSearch",
         component: () => import('../components/login/Pwd_Search')
+    },
+    {
+        path: "/board/view/comment",
+        name: "comment",
+        component: () => import('../components/board/comment')
     }
 ];
 
