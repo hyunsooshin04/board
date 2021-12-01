@@ -28,4 +28,12 @@ CREATE TABLE `login_id` (
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
  
+ create table `comment` (
+   `id` char(20) NOT NULL,
+   `name` char(20) NOT NULL,
+   `comment` text,
+   `regdate` datetime DEFAULT NULL,
+   `num` int(10)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ 
  코드 실행전에 이걸 mysql에 쳐주고 계정 아이디 root 비밀번호 toor이 아닐시 config.js에서 user password 내용을 바꿔주면 코드 정상 작동
