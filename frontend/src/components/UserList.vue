@@ -15,6 +15,11 @@
       </tr>
       </tbody>
     </table>
+<!--    <select v-model="test">-->
+<!--      <option value="1">일반계정</option>-->
+<!--      <option value="2">댓글 관리자 계정</option>-->
+<!--      <option value="3">관리자 계정</option>-->
+<!--    </select>-->
   </div>
 </template>
 
@@ -24,7 +29,8 @@ export default {
   data() {
     return {
       list: '',
-      body: ''
+      body: '',
+      test: 2,
     }
   },
   mounted() {
