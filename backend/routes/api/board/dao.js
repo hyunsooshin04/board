@@ -25,8 +25,7 @@ exports.list = (req, res) => {
             FROM tb_board
             WHERE board_code = ? ${where} `;
     conn.query(sql, [body.board_code], (err, data) => {
-        console.log(body.board_code)
-        if (err) throw err
+        if (err) console.log(err);
         totalCount = data[0].cnt;
         total_page = Math.ceil(totalCount / ipp);
         if (body.page) page = body.page;
@@ -49,7 +48,7 @@ exports.list = (req, res) => {
                 WHERE board_code = ? ${where}
                 ORDER BY num DESC LIMIT ?, ? `;
         conn.query(sql, [body.board_code, start, end], (err, list) => {
-            if (err) throw err;
+            if (err) console.log(err);
             sql
             res.send({success: true, list: list, paging: paging});
         })
@@ -60,7 +59,7 @@ exports.mod = (req, res) => {
     body = req.body;
     sql = " UPDATE tb_board SET subject = ?, cont = ?, editdate = now() WHERE num = ? ";
     conn.query(sql, [body.subject, body.cont, body.num], (err, result) => {
-        if (err) throw err;
+        if (err) console.log(err);
         res.send({success: true});
     })
 }
@@ -69,7 +68,7 @@ exports.delete = (req, res) => {
     body = req.query;
     sql = " DELETE FROM tb_board WHERE num = ? ";
     conn.query(sql, [body.num], (err, result) => {
-        if (err) throw err;
+        if (err) console.log(err);
         res.send({success: true, result: result});
     })
 }
@@ -80,14 +79,16 @@ exports.view = (req, res) => {
     sql = " SELECT * FROM tb_board WHERE board_code = ? AND num = ? ";
 
     conn.query(sql, [body.board_code, num], (err, view) => {
-        if (err) throw err;
-
-        res.send({success: true, view: view});
+        if (err) console.log(err);
+        sql = " SELECT level, id FROM login_id WHERE id = ?";
+        conn.query(sql, (req.params.id), (err, log) => {
+            if (err) console.log(err);
+            res.send({success: true, view: view, user: log[0]});
+        })
     });
     sql = " UPDATE tb_board SET views = views + 1 WHERE num = ?"
     conn.query(sql, [req.params.num]), (err, view) => {
-        if (err) throw err;
-        console.log(view);
+        if (err) console.log(err);
     }
 }
 
@@ -97,7 +98,7 @@ exports.add = (req, res) => { //등록 프로세스 모듈
     conn.query(sql,
         [body.board_code, body.subject, body.cont, body.id, body.name],
         (err, result) => {
-            if (err) throw err;
+            if (err) console.log(err);
 
             res.send({success: true});
         })
@@ -112,7 +113,6 @@ exports.comment = (req, res) => {
 }
 
 exports.getcomment = (req, res) => {
-    console.log(req.params.num);
     sql = " SELECT * FROM comment WHERE num = ? ORDER BY no";
     conn.query(sql, (req.params.num), (err, log) => {
         if (err) console.log(err);
@@ -132,7 +132,6 @@ exports.update_comment = (req, res) => {
     sql = " UPDATE comment SET comment = ?, editdate = now() WHERE no = ?";
     conn.query(sql, [req.params.comment, req.params.no], (err, log) => {
         if (err) console.log(err);
-        console.log("ok")
         res.send({update: "ok"});
     })
 }

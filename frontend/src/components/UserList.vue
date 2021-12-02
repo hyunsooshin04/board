@@ -10,7 +10,7 @@
       </thead>
       <tbody>
       <tr v-for="(list, index) in list" v-bind:key="index">
-        <th scope="row">유저명</th>
+        <th scope="row">유저명(아이디)</th>
         <td><a href="javascript:;" v-on:click="FnList(`` + list.id)">{{ list.name }}({{ list.id }})</a></td>
       </tr>
       </tbody>
@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     GetList() {
-      this.$axios.get('http://localhost:3000/api/board/user/list')
+      this.$axios.get('http://localhost:3000/api/board/user/list/get')
           .then((res) => {
             this.list = res.data.list;
           })

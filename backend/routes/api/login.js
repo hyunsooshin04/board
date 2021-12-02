@@ -9,7 +9,6 @@ exports.login = (req, res) => {
             try {
                 if (log[0].id == req.params.id) {
                     if (log[0].pwd == req.params.password) {
-                        console.log("로그인 완료");
                         res.send({isLogin: "true", name: log[0].name, id: log[0].id})
                     } else res.send({isLogin: "pwd"})
                 } else res.send({isLogin: "error"})
@@ -35,8 +34,10 @@ exports.signup = (req, res) => {
             check = true;
         }
         if (check) {
-            sql = " INSERT INTO  login_id (id, pwd, name, gender) values (?, ?, ?, ?)";
+            sql = " INSERT INTO  login_id (level,id, pwd, name, gender) values (1, ?, ?, ?, ?)";
             conn.query(sql, [req.params.id, req.params.pwd, req.params.name, "미설정"], (err, req) => {
+                if (err) console.log(err);
+                console.log(req)
                 res.send({success: "ok"});
             })
         }
@@ -60,7 +61,6 @@ exports.myinfor = (req, res) => {
 }
 
 exports.edit = (req, res) => {
-    console.log("edit실행");
     console.log(req.body);
     sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ?, question = ?, answer = ? WHERE id = ?";
     conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.question, req.body.answer, req.body.id], (err, log) => {
@@ -101,7 +101,6 @@ exports.userinfo = (req, res) => {
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
         if (err) console.log(err);
-        console.log(log)
         res.send({name: log[0].name, cont: log[0].cont, hobby: log[0].hobby, gender: log[0].gender, city: log[0].city})
     })
 }

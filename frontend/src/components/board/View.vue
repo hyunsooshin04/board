@@ -22,8 +22,8 @@
 
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
-      <a href="javascript:;" @click="fnMod" class="btnAdd btn">수정</a>
-      <a v-if="num" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn">삭제</a>
+      <a href="javascript:;" @click="fnMod" class="btnAdd btn" v-if="edit">수정</a>
+      <a v-if="del" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn" >삭제</a>
     </div>
     <div id="comment">
       <div id="form-commentInfo">
@@ -79,6 +79,10 @@ export default {
       del_num: '',
       edit_comment: '',
       see: false,
+      edit: false,
+      del: false,
+      userid: '',
+      userlv: '',
     }
   },
   mounted() {
@@ -150,11 +154,13 @@ export default {
       }
     },
     fnGetView() {
-      this.$axios.get('http://localhost:3000/api/board/' + this.body.num, {params: this.body})
+      this.$axios.get('http://localhost:3000/api/board/' + this.body.num + '/' + this.id , {params: this.body})
           .then((res) => {
             this.view = res.data.view[0];
             this.subject = this.view.subject;
             this.cont = this.view.cont.replace(/(\n)/g, '<br/>');
+            if (res.data.user.id == this.view.id) this.edit = true;
+            if (res.data.user.level == 3 || res.data.user.id == this.view.id) this.del = true;
           })
           .catch((err) => {
             console.log(err);

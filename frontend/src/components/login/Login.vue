@@ -73,7 +73,7 @@ export default {
         localStorage.setItem("name", this.name);
         localStorage.setItem("id", this.id);
 
-        location.href = "http://localhost:8080/board/list"
+        location.href = "http://localhost:8080"
       }
       if (isLogin == 'id') alert("ID가 틀렸습니다.");
       if (isLogin == 'pwd') alert("Pw가 틀렸습니다.");

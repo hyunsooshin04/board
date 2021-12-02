@@ -16,6 +16,7 @@ CREATE TABLE `tb_board` (
  ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 CREATE TABLE `login_id` (
+   `level` int(10) NOT NULL,
    `id` char(20) NOT NULL,
    `pwd` char(20) NOT NULL,
    `name` char(20) NOT NULL,
@@ -27,6 +28,7 @@ CREATE TABLE `login_id` (
    `answer` varchar(10),
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
  
 create table `comment` (
    `no` int(10) NOT NULL AUTO_INCREMENT,
