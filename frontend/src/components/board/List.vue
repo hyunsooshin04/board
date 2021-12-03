@@ -34,7 +34,7 @@
           <td>{{ no - idx }}</td>
           <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
           <td>{{ row.name }}</td>
-          <td>{{ row.id }}</td>
+          <td><a href="javascript:;" v-on:click="FnList(`` + row.id)">{{ row.id }}</a></td>
           <td>{{ row.regdate.substring(0, 10) }}</td>
           <td>{{ row.views }}</td>
         </tr>
@@ -97,6 +97,12 @@ export default {
     this.fnGetList();
   },
   methods: {
+    FnList(id) {
+      this.body = {
+        id: id
+      }
+      this.$router.push({path: '/board/user/view', query: this.body});
+    },
     fnGetList() {
       this.body = {
         board_code: this.board_code,
@@ -223,6 +229,21 @@ export default {
   padding: 5px;
   color: #666;
   border: 1px solid;
+}
+
+.listWrap a:link {
+  color: black;
+  text-decoration: none;
+}
+
+.listWrap a:visited {
+  color: black;
+  text-decoration: none;
+}
+
+.listWrap a:hover {
+  color: blue;
+  text-decoration: underline;
 }
 
 </style>

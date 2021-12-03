@@ -50,6 +50,7 @@ export default {
       cont: '미설정',
       status_message: '미설정',
       city: '미설정',
+      share: "true",
     }
   },
   created: function () {

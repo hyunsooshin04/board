@@ -18,7 +18,9 @@ router.get("/login/:id", lg.pwsearch);
 
 router.get("/login/:id/:answer/:pwd", lg.editpwd);
 
-router.get("/userinfo/:id", lg.userinfo)
+router.get("/userinfo/:id/:userid", lg.userinfo)
+
+router.get("/userinfo/update/:id/:level", lg.updatelevel)
 
 router.use("/board", board); //board router 적용
 

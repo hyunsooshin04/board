@@ -19,7 +19,16 @@ exports.list = (req, res) => {
     let end_page = block;
     let where = "";
     let body = req.query;
-    let id = "";
+    let level = "";
+    sql = ' SELECT * FROM login_id WHERE id = ?';
+    conn.query(sql, (body.id), (err, log) => {
+        try {
+            level = log[0].level;
+        } catch (err) {
+            level = 0;
+        }
+    })
+
     if (body.keyword) where += ` AND subject like '%${body.keyword}%' `;
     sql = ` SELECT count(*) cnt
             FROM tb_board
@@ -32,7 +41,6 @@ exports.list = (req, res) => {
         start = (page - 1) * 10;
         start_page = Math.ceil(page / block);
         end_page = start_page * block;
-
         if (total_page < end_page) end_page = total_page;
         let paging = {
             "totalCount": totalCount,
@@ -42,6 +50,41 @@ exports.list = (req, res) => {
             "end_page": end_page,
             "ipp": ipp
         }
+        // if (body.day == '') {
+        //     if (body.standard == "day") {
+        //         sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where}
+        //         ORDER BY num DESC LIMIT ?, ? `;
+        //     } else {
+        //         sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where}
+        //         ORDER BY views DESC LIMIT ?, ? `;
+        //     }
+        //
+        //     conn.query(sql, [body.board_code, start, end], (err, list) => {
+        //         if (err) console.log(err);
+        //         res.send({success: true, list: list, paging: paging, level: level});
+        //     })
+        // } else {
+        //     if (body.standard == "day") {
+        //         sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where} AND regdate = ?
+        //         ORDER BY num DESC LIMIT ?, ? `;
+        //     } else {
+        //         sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where} AND regdate = ?
+        //         ORDER BY views DESC LIMIT ?, ? `;
+        //     }
+        //
+        //     conn.query(sql, [body.board_code, body.day, start, end], (err, list) => {
+        //         if (err) console.log(err);
+        //         res.send({success: true, list: list, paging: paging, level: level});
+        //     })
+        // }
         if (body.standard == "day") {
             sql = ` SELECT *
                 FROM tb_board
@@ -56,8 +99,7 @@ exports.list = (req, res) => {
 
         conn.query(sql, [body.board_code, start, end], (err, list) => {
             if (err) console.log(err);
-            sql
-            res.send({success: true, list: list, paging: paging});
+            res.send({success: true, list: list, paging: paging, level: level});
         })
     })
 }

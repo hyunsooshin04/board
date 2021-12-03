@@ -5,7 +5,17 @@
       <thead>
       <tr>
         <th scope="cols">타이틀</th>
-        <th scope="cols">내용</th>
+        <th scope="cols">내용
+          <span v-if="lv > 2" style="float: right;">
+            <select v-model="selectlv">
+              <option value="1">일반계정</option>
+              <option value="2">댓글관리자계정</option>
+              <option value="3">관리자계정</option>
+            </select>
+            <button v-on:click="updatepower">권한 부여</button>
+<!--            <button>유저 정보 삭제</button>-->
+          </span>
+        </th>
       </tr>
       </thead>
       <tbody>
@@ -49,17 +59,29 @@ export default {
       hobby: '미설정',
       status_message: '미설정',
       city: '미설정',
+      userid: localStorage.getItem("id"),
+      lv: '',
+      selectlv: '1',
     }
   },
   methods: {
     GetUserInfo() {
-      this.$axios.get('http://localhost:3000/api/userinfo/' + this.id)
+      this.$axios.get('http://localhost:3000/api/userinfo/' + this.id + "/" + this.userid)
+          .then((res) => {
+            this.name = res.data.name == null ? "미설정" : res.data.name;
+            this.gender = res.data.gender;
+            this.status_message = res.data.cont == null ? "미설정" : res.data.cont;
+            this.hobby = res.data.hobby == null ? "미설정" : res.data.hobby;
+            this.city = res.data.city == null ? "미설정" : res.data.city;
+            this.lv = res.data.level;
+            this.selectlv = res.data.userlv
+          })
+    },
+    updatepower(e) {
+      e.preventDefault();
+      this.$axios.get('http://localhost:3000/api/userinfo/update/' + this.id + "/" + this.selectlv)
       .then((res) => {
-        this.name = res.data.name == null ? "미설정" : res.data.name;
-        this.gender = res.data.gender;
-        this.status_message = res.data.cont == null ? "미설정" : res.data.cont;;
-        this.hobby = res.data.hobby == null ? "미설정" : res.data.hobby;
-        this.city = res.data.city == null ? "미설정" : res.data.city;
+        if (res.data.ok == "ok") alert("수정되었습니다.")
       })
     }
   },
@@ -99,5 +121,9 @@ table.type09 td {
   padding: 10px;
   vertical-align: top;
   border-bottom: 1px solid #ccc;
+}
+
+button {
+  margin: 5px;
 }
 </style>

@@ -26,6 +26,7 @@ CREATE TABLE `login_id` (
    `city` char(20),
    `question` varchar(20),
    `answer` varchar(10),
+   `share` char(20),
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 

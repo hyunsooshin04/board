@@ -13,7 +13,6 @@ exports.login = (req, res) => {
                     } else res.send({isLogin: "pwd"})
                 } else res.send({isLogin: "error"})
             } catch (err) {
-
                 console.log('err : ' + err)
                 res.send({isLogin: "id"})
             }
@@ -34,8 +33,8 @@ exports.signup = (req, res) => {
             check = true;
         }
         if (check) {
-            sql = " INSERT INTO  login_id (level,id, pwd, name, gender) values (1, ?, ?, ?, ?)";
-            conn.query(sql, [req.params.id, req.params.pwd, req.params.name, "미설정"], (err, req) => {
+            sql = " INSERT INTO  login_id (level,id, pwd, name, gender, share) values (1, ?, ?, ?, ?, ?)";
+            conn.query(sql, [req.params.id, req.params.pwd, req.params.name, "미설정", "true"], (err, req) => {
                 if (err) console.log(err);
                 console.log(req)
                 res.send({success: "ok"});
@@ -55,15 +54,15 @@ exports.myinfor = (req, res) => {
             cont: log[0].cont,
             pwd: log[0].pwd,
             msg: log[0].question,
-            answer: log[0].answer
+            answer: log[0].answer,
+            share: log[0].share,
         })
     })
 }
 
 exports.edit = (req, res) => {
-    console.log(req.body);
-    sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ?, question = ?, answer = ? WHERE id = ?";
-    conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.question, req.body.answer, req.body.id], (err, log) => {
+    sql = " UPDATE login_id SET pwd = ?, cont = ?, gender = ?, hobby = ?, city = ?, question = ?, answer = ?, share = ? WHERE id = ?";
+    conn.query(sql, [req.body.pwd, req.body.msg, req.body.gender, req.body.hobby, req.body.city, req.body.question, req.body.answer, req.body.share, req.body.id], (err, log) => {
         if (err) console.log(err);
         res.send({edit: true})
     })
@@ -98,9 +97,66 @@ exports.editpwd = (req, res) => {
 }
 
 exports.userinfo = (req, res) => {
+    let lv = '';
+    sql = " SELECT * FROM login_id WHERE id = ?";
+    conn.query(sql, (req.params.userid), (err, log) => {
+        if (err) lv = 0;
+        else lv = log[0].level;
+    })
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
-        if (err) console.log(err);
-        res.send({name: log[0].name, cont: log[0].cont, hobby: log[0].hobby, gender: log[0].gender, city: log[0].city})
+            if (err) console.log(err);
+            if (log[0].share == "false" && lv < 3) {
+                try {
+                    res.send({
+                        name: log[0].name,
+                        cont: "비공개 설정입니다.",
+                        hobby: "비공개 설정입니다.",
+                        gender: "비공개 설정입니다.",
+                        city: "비공개 설정입니다.",
+                        level: lv,
+                        userlv: log[0].level
+                    })
+                } catch (err) {
+                    res.send({
+                        name: "Guest",
+                        cont: "게스트 아이디입니다.",
+                        hobby: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        gender: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        city: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        userlv: 0,
+                    })
+                }
+            } else {
+                try {
+                    res.send({
+                        name: log[0].name,
+                        cont: log[0].cont,
+                        hobby: log[0].hobby,
+                        gender: log[0].gender,
+                        city: log[0].city,
+                        level: lv,
+                        userlv: log[0].level
+                    })
+                } catch (err) {
+                    res.send({
+                        name: "Guest",
+                        cont: "게스트 아이디입니다.",
+                        hobby: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        gender: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        city: "로그인을 한 뒤에 설정할 수 있습니다.",
+                        userlv: 0
+                    })
+                }
+            }
+        }
+    )
+}
+
+
+exports.updatelevel = (req, res) => {
+    sql = " UPDATE login_id SET level = ? WHERE id = ?";
+    conn.query(sql, [req.params.level, req.params.id], (err, log) => {
+        res.send({ok: "ok"})
     })
 }
