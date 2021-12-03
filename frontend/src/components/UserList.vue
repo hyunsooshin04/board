@@ -5,21 +5,24 @@
       <thead>
       <tr>
         <th scope="cols">유저 리스트</th>
-        <th></th>
+        <th style="text-align: right" scope="cols"><span style="background-color: deepskyblue">
+          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : 관리자
+          <span style="background-color: skyblue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : 댓글 관리자
+        </th>
       </tr>
       </thead>
       <tbody>
       <tr v-for="(list, index) in list" v-bind:key="index">
-        <th scope="row">유저명(아이디)</th>
+        <th v-bind:id="'lv' + list.level" scope="row">유저명(아이디)</th>
         <td><a href="javascript:;" v-on:click="FnList(`` + list.id)">{{ list.name }}({{ list.id }})</a></td>
       </tr>
       </tbody>
     </table>
-<!--    <select v-model="test">-->
-<!--      <option value="1">일반계정</option>-->
-<!--      <option value="2">댓글 관리자 계정</option>-->
-<!--      <option value="3">관리자 계정</option>-->
-<!--    </select>-->
+    <!--    <select v-model="test">-->
+    <!--      <option value="1">일반계정</option>-->
+    <!--      <option value="2">댓글 관리자 계정</option>-->
+    <!--      <option value="3">관리자 계정</option>-->
+    <!--    </select>-->
   </div>
 </template>
 
@@ -54,6 +57,14 @@ export default {
 </script>
 
 <style scoped>
+#lv3 {
+  background-color: deepskyblue;
+}
+
+#lv2 {
+  background-color: skyblue;
+}
+
 table.type09 {
   border-collapse: collapse;
   text-align: left;

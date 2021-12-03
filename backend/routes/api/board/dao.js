@@ -42,11 +42,18 @@ exports.list = (req, res) => {
             "end_page": end_page,
             "ipp": ipp
         }
-
-        sql = ` SELECT *
+        if (body.standard == "day") {
+            sql = ` SELECT *
                 FROM tb_board
                 WHERE board_code = ? ${where}
                 ORDER BY num DESC LIMIT ?, ? `;
+        } else {
+            sql = ` SELECT *
+                FROM tb_board
+                WHERE board_code = ? ${where}
+                ORDER BY views DESC LIMIT ?, ? `;
+        }
+
         conn.query(sql, [body.board_code, start, end], (err, list) => {
             if (err) console.log(err);
             sql
@@ -137,7 +144,7 @@ exports.update_comment = (req, res) => {
 }
 
 exports.userlist = (req, res) => {
-    sql = " SELECT * FROM login_id";
+    sql = " SELECT * FROM login_id ORDER BY level DESC";
     conn.query(sql, (err, log) => {
         if (err) console.log(err);
         res.send({list: log})

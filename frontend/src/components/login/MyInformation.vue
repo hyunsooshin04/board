@@ -56,12 +56,12 @@ export default {
     this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
     this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
     this.$axios.get('http://localhost:3000/api/myinfo/' + this.id)
-    .then((res) => {
-      this.gender = res.data.gender;
-      this.status_message = res.data.cont;
-      this.hobby = res.data.hobby;
-      this.city = res.data.city;
-    })
+        .then((res) => {
+          this.gender = res.data.gender;
+          this.status_message = res.data.cont;
+          this.hobby = res.data.hobby;
+          this.city = res.data.city;
+        })
   }
 }
 </script>

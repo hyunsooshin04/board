@@ -3,7 +3,12 @@
     <h2>공지사항</h2>
     <div class="searchWrap">
       <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
-                                                                       class="btnSearch btn">검색</a>
+                                                                       class="btnSearch btn">검색</a><br>
+      <span>정렬 기준 : </span>
+      <select v-model="standard">
+        <option value="day">날짜</option>
+        <option value="views">조회수</option>
+      </select>
     </div>
     <div class="listWrap">
       <table class="tbList">
@@ -75,6 +80,7 @@ export default {
       keyword: this.$route.query.keyword,
       isLogin: '',
       name: 'Guest',
+      standard: 'day',
 
       paginavigation: function () {
         var pageNumber = [];
@@ -93,7 +99,8 @@ export default {
       this.body = {
         board_code: this.board_code,
         keyword: this.keyword,
-        page: this.page
+        page: this.page,
+        standard: this.standard
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {
@@ -142,6 +149,11 @@ export default {
     // this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
     this.id = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
     // console.log(this.name)
+  },
+  watch: {
+    standard() {
+      this.fnGetList()
+    }
   }
 }
 </script>
