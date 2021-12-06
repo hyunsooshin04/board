@@ -2,7 +2,7 @@
   <div>
     <h2>{{ id }} 공지사항</h2>
     <div class="searchWrap">
-      <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
+      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;" @click="fnSearch"
                                                                        class="btnSearch btn">검색</a><br>
       <span>정렬 기준 : </span>
       <select v-model="standard">

@@ -23,6 +23,8 @@
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
       <a href="javascript:;" @click="fnMod" class="btnAdd btn" v-if="edit">수정</a>
+      <a href="javascript:;" @click="book(`true`)" class="btnbookmark btn" v-if="bookmark">즐겨찾기 해제</a>
+      <a href="javascript:;" @click="book('false')" class="btnbookmark btn" v-if="!bookmark">즐겨찾기</a>
       <a v-if="del" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn">삭제</a>
     </div>
     <div id="comment">
@@ -89,12 +91,21 @@ export default {
       userlv: '',
       editsee: [],
       delsee: [],
+      bookmark: false,
     }
   },
   mounted() {
     this.fnGetView();
   },
   methods: {
+    book(ck) {
+      this.$axios.get('http://localhost:3000/api/board/user/bookmark/' + this.id + '/' + this.num + '/' + ck)
+      .then((res) => {
+        if (res.data.ok == "ok") alert("즐겨찾기가 해제되었습니다.");
+        if (res.data.ok == "Ok") alert("즐겨찾기가 등록되었습니다.");
+        this.fnGetView();
+      })
+    },
     input_update(id) {
       let see = document.getElementsByClassName("see");
       for (let i = 0; i < see.length; i++) {
@@ -173,8 +184,8 @@ export default {
             this.view = res.data.view[0];
             this.subject = this.view.subject;
             this.cont = this.view.cont.replace(/(\n)/g, '<br/>');
-            // this.userlv = res.data.user.level;
             this.userlv = parseInt(res.data.user.level);
+            this.bookmark = res.data.bookmark;
             if (res.data.user.id == this.view.id) this.edit = true;
             if (this.userlv == 3 || res.data.user.id == this.view.id) this.del = true;
             this.CommentGet();
@@ -314,7 +325,9 @@ h4 {
 .btnAdd {
   background: #43b984
 }
-
+.btnbookmark {
+  background: darkkhaki;
+}
 .btnDelete {
   background: #f00;
 }

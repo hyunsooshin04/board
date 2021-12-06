@@ -103,6 +103,11 @@ const routes = [
         path: "/board/list/userid",
         name : "Listid",
         component: () => import('../components/board/Listid')
+    },
+    {
+        path: "/user/bookmark",
+        name : "bookmark",
+        component: () => import('../components/login/Bookmark')
     }
 ];
 

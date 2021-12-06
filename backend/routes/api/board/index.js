@@ -19,6 +19,8 @@ router.get("/comment/del/:no", dao.del_comment)
 
 router.get("/comment/update/:comment/:no", dao.update_comment)
 
+router.get("/user/bookmark/:id/:num/:isbookmark", dao.bookmark)
+
 router.get('/user/list/get', dao.userlist)
 
 router.all('*',(req, res)=> {

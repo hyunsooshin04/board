@@ -1,5 +1,6 @@
 const db = require('../../../config/db');
 const {parse} = require("nodemon/lib/cli");
+const {log} = require("nodemon/lib/utils");
 
 const conn = db.init();
 
@@ -20,6 +21,8 @@ exports.list = (req, res) => {
     let where = "";
     let body = req.query;
     let level = "";
+    let data = {};
+    let query = '';
     sql = ' SELECT * FROM login_id WHERE id = ?';
     conn.query(sql, (body.id), (err, log) => {
         try {
@@ -30,109 +33,168 @@ exports.list = (req, res) => {
     })
 
     if (body.keyword) where += ` AND subject like '%${body.keyword}%' `;
-    sql = ` SELECT count(*) cnt
-            FROM tb_board
-            WHERE board_code = ? ${where} `;
-    conn.query(sql, [body.board_code], (err, data) => {
-        if (err) console.log(err);
-        totalCount = data[0].cnt;
-        total_page = Math.ceil(totalCount / ipp);
-        if (body.page) page = body.page;
-        start = (page - 1) * 10;
-        start_page = Math.ceil(page / block);
-        end_page = start_page * block;
-        if (total_page < end_page) end_page = total_page;
-        let paging = {
-            "totalCount": totalCount,
-            "total_page": total_page,
-            "page": page,
-            "start_page": start_page,
-            "end_page": end_page,
-            "ipp": ipp
-        }
-        if (body.search == 'all') {
-            if (body.standard == "day") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where}
-                        ORDER BY num DESC LIMIT ?, ? `;
-            } else if (body.standard == "views") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where}
-                        ORDER BY views DESC LIMIT ?, ? `;
-            } else {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where}
-                        ORDER BY name, id LIMIT ?, ? `;
+    if (body.search == "bookmark") {
+        sql = ` SELECT count(*) cnt
+                FROM bookmark
+                WHERE id = ? ${where} `;
+        conn.query(sql, [body.id], (err, data) => {
+            if (err) console.log(err);
+            totalCount = data[0].cnt;
+            total_page = Math.ceil(totalCount / ipp);
+            if (body.page) page = body.page;
+            start = (page - 1) * 10;
+            start_page = Math.ceil(page / block);
+            end_page = start_page * block;
+            if (total_page < end_page) end_page = total_page;
+            let paging = {
+                "totalCount": totalCount,
+                "total_page": total_page,
+                "page": page,
+                "start_page": start_page,
+                "end_page": end_page,
+                "ipp": ipp
             }
+            sql = ` SELECT *
+                    FROM bookmark
+                    WHERE id = ? ${where}
+                    ORDER BY no DESC LIMIT ?, ? `;
+            conn.query(sql, [body.id, start, end], (err, data) => {
+                if (err) console.log(err);
+                for (let i = 0; i < data.length; i++) {
+                    if (i == data.length - 1) query += `num = ${data[i].num}`
+                    else query += `num = ${data[i].num} or `
+                }
+                sql = `select *
+                       from tb_board
+                       where ${query}`;
+                conn.query(sql, (err, list) => {
+                    if (err) console.log(err);
+                    res.send({success: true, list: list, paging: paging, level: level});
+                })
+            })
+        })
+    } else {
+        sql = ` SELECT count(*) cnt
+                FROM tb_board
+                WHERE board_code = ? ${where} `;
+        conn.query(sql, [body.board_code], (err, data) => {
+            if (err) console.log(err);
+            totalCount = data[0].cnt;
+            total_page = Math.ceil(totalCount / ipp);
+            if (body.page) page = body.page;
+            start = (page - 1) * 10;
+            start_page = Math.ceil(page / block);
+            end_page = start_page * block;
+            if (total_page < end_page) end_page = total_page;
+            let paging = {
+                "totalCount": totalCount,
+                "total_page": total_page,
+                "page": page,
+                "start_page": start_page,
+                "end_page": end_page,
+                "ipp": ipp
+            }
+            if (body.search == 'all') {
+                if (body.standard == "day") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where}
+                            ORDER BY num DESC LIMIT ?, ? `;
+                } else if (body.standard == "views") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where}
+                            ORDER BY views DESC LIMIT ?, ? `;
+                } else {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where}
+                            ORDER BY name, id LIMIT ?, ? `;
+                }
 
-            conn.query(sql, [body.board_code, start, end], (err, list) => {
-                if (err) console.log(err);
-                res.send({success: true, list: list, paging: paging, level: level});
-            })
-        } else if (body.search == "day") {
-            if (body.standard == "day") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} AND regdate like ?
-                        ORDER BY num DESC LIMIT ?, ? `;
-            } else if (body.standard == "views") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} AND regdate like ?
-                        ORDER BY views DESC LIMIT ?, ? `;
-            } else {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} AND regdate like ?
-                        ORDER BY name, id LIMIT ?, ? `;
-            }
+                conn.query(sql, [body.board_code, start, end], (err, list) => {
+                    if (err) console.log(err);
+                    res.send({success: true, list: list, paging: paging, level: level});
+                })
+            } else if (body.search == "day") {
+                if (body.standard == "day") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} AND regdate like ?
+                            ORDER BY num DESC LIMIT ?, ? `;
+                } else if (body.standard == "views") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} AND regdate like ?
+                            ORDER BY views DESC LIMIT ?, ? `;
+                } else {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} AND regdate like ?
+                            ORDER BY name, id LIMIT ?, ? `;
+                }
 
-            conn.query(sql, [body.board_code, body.day, start, end], (err, list) => {
-                if (err) console.log(err);
-                res.send({success: true, list: list, paging: paging, level: level});
-            })
-        } else if (body.search == "id") {
-            if (body.standard == "day") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} and id = ?
-                        ORDER BY num DESC LIMIT ?, ? `;
-            } else if (body.standard == "views") {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} and id = ?
-                        ORDER BY views DESC LIMIT ?, ? `;
-            } else {
-                sql = ` SELECT *
-                        FROM tb_board
-                        WHERE board_code = ? ${where} and id = ?
-                        ORDER BY name, id LIMIT ?, ? `;
+                conn.query(sql, [body.board_code, body.day, start, end], (err, list) => {
+                    if (err) console.log(err);
+                    res.send({success: true, list: list, paging: paging, level: level});
+                })
+            } else if (body.search == "id") {
+                if (body.standard == "day") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} and id = ?
+                            ORDER BY num DESC LIMIT ?, ? `;
+                } else if (body.standard == "views") {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} and id = ?
+                            ORDER BY views DESC LIMIT ?, ? `;
+                } else {
+                    sql = ` SELECT *
+                            FROM tb_board
+                            WHERE board_code = ? ${where} and id = ?
+                            ORDER BY name, id LIMIT ?, ? `;
+                }
+                conn.query(sql, [body.board_code, body.id, start, end], (err, list) => {
+                    if (err) console.log(err);
+                    res.send({success: true, list: list, paging: paging, level: level});
+                })
             }
-            conn.query(sql, [body.board_code, body.id, start, end], (err, list) => {
-                if (err) console.log(err);
-                res.send({success: true, list: list, paging: paging, level: level});
-            })
-        }
-        // if (body.standard == "day") {
-        //     sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where}
-        //         ORDER BY num DESC LIMIT ?, ? `;
-        // } else {
-        //     sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where}
-        //         ORDER BY views DESC LIMIT ?, ? `;
-        // }
-        //
-        // conn.query(sql, [body.board_code, start, end], (err, list) => {
-        //     if (err) console.log(err);
-        //     res.send({success: true, list: list, paging: paging, level: level});
-        // })
-    })
+            // if (body.standard == "day") {
+            //     sql = ` SELECT *
+            //         FROM tb_board
+            //         WHERE board_code = ? ${where}
+            //         ORDER BY num DESC LIMIT ?, ? `;
+            // } else {
+            //     sql = ` SELECT *
+            //         FROM tb_board
+            //         WHERE board_code = ? ${where}
+            //         ORDER BY views DESC LIMIT ?, ? `;
+            // }
+            //
+            // conn.query(sql, [body.board_code, start, end], (err, list) => {
+            //     if (err) console.log(err);
+            //     res.send({success: true, list: list, paging: paging, level: level});
+            // })
+        })
+    }
+}
+
+exports.bookmark = (req, res) => {
+    console.log(req.params.id + " " + req.params.num);
+    if (req.params.isbookmark == "true") {
+        sql = ` DELETE FROM bookmark WHERE id = ? and num = ?`;
+        conn.query(sql, [req.params.id, req.params.num], (err, log) => {
+            if (err) console.log(err);
+            else res.send({ok: "ok"})
+        })
+    } else {
+        sql = ` INSERT INTO bookmark (id, num, regdate) values (?, ?, now())`
+        conn.query(sql, [req.params.id, req.params.num], (err, log) => {
+            if (err) console.log(err);
+            else res.send({ok: "Ok"});
+        })
+    }
 }
 
 exports.mod = (req, res) => {
@@ -156,14 +218,21 @@ exports.delete = (req, res) => {
 exports.view = (req, res) => {
     body = req.query;
     num = req.params.num;
-    sql = " SELECT * FROM tb_board WHERE board_code = ? AND num = ? ";
-
-    conn.query(sql, [body.board_code, num], (err, view) => {
+    let bookmark = false;
+    sql = ` SELECT * FROM bookmark WHERE id = ?`;
+    conn.query(sql,(req.params.id), (err, log) => {
+        if (err) console.log(err);
+        for (let i = 0; i < log.length; i++) {
+            if (log[i].num == req.params.num) bookmark = true
+        }
+    })
+    sql = " SELECT * FROM tb_board WHERE num = ? ";
+    conn.query(sql, [num], (err, view) => {
         if (err) console.log(err);
         sql = " SELECT level, id FROM login_id WHERE id = ?";
         conn.query(sql, (req.params.id), (err, log) => {
             if (err) console.log(err);
-            res.send({success: true, view: view, user: log[0]});
+            res.send({success: true, view: view, user: log[0], bookmark: bookmark});
         })
     });
     sql = " UPDATE tb_board SET views = views + 1 WHERE num = ?"

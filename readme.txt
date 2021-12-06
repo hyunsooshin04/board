@@ -41,4 +41,6 @@ create table `comment` (
    PRIMARY KEY (`no`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
  
+mysql installer > server 옆에 reconfigure > Auth 설정가서 legacy 선택 > 완료
+
  코드 실행전에 이걸 mysql에 쳐주고 계정 아이디 root 비밀번호 toor이 아닐시 config.js에서 user password 내용을 바꿔주면 코드 정상 작동

@@ -9,6 +9,9 @@
         <li>
           <router-link to="/board/list">게시판</router-link>
         </li>
+        <li>
+          <router-link to="/board/user/list">유저 리스트</router-link>
+        </li>
         <li v-if="!isLogin">
           <router-link to="/login">로그인</router-link>
         </li>
@@ -17,7 +20,7 @@
           <input type="checkbox" id="menu-toggle"/>
           <ul id="menu"><br>
             <li>
-              <router-link to="/board/user/list">유저 리스트</router-link>
+              <router-link to="/user/bookmark">즐겨 찾기</router-link>
             </li>
             <li>
               <router-link to="/myinformation">내정보</router-link>
@@ -28,7 +31,7 @@
             </li>
             <br>
             <li>
-              <a href="http://localhost:8080/" v-on:click="logout">로그아웃</a>
+              <a href="http://localhost:8080/" v-on:click="logout">로그 아웃</a>
             </li>
           </ul>
         </li>
