@@ -50,57 +50,88 @@ exports.list = (req, res) => {
             "end_page": end_page,
             "ipp": ipp
         }
-        // if (body.day == '') {
-        //     if (body.standard == "day") {
-        //         sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where}
-        //         ORDER BY num DESC LIMIT ?, ? `;
-        //     } else {
-        //         sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where}
-        //         ORDER BY views DESC LIMIT ?, ? `;
-        //     }
-        //
-        //     conn.query(sql, [body.board_code, start, end], (err, list) => {
-        //         if (err) console.log(err);
-        //         res.send({success: true, list: list, paging: paging, level: level});
-        //     })
-        // } else {
-        //     if (body.standard == "day") {
-        //         sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where} AND regdate = ?
-        //         ORDER BY num DESC LIMIT ?, ? `;
-        //     } else {
-        //         sql = ` SELECT *
-        //         FROM tb_board
-        //         WHERE board_code = ? ${where} AND regdate = ?
-        //         ORDER BY views DESC LIMIT ?, ? `;
-        //     }
-        //
-        //     conn.query(sql, [body.board_code, body.day, start, end], (err, list) => {
-        //         if (err) console.log(err);
-        //         res.send({success: true, list: list, paging: paging, level: level});
-        //     })
-        // }
-        if (body.standard == "day") {
-            sql = ` SELECT *
-                FROM tb_board
-                WHERE board_code = ? ${where}
-                ORDER BY num DESC LIMIT ?, ? `;
-        } else {
-            sql = ` SELECT *
-                FROM tb_board
-                WHERE board_code = ? ${where}
-                ORDER BY views DESC LIMIT ?, ? `;
-        }
+        if (body.search == 'all') {
+            if (body.standard == "day") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where}
+                        ORDER BY num DESC LIMIT ?, ? `;
+            } else if (body.standard == "views") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where}
+                        ORDER BY views DESC LIMIT ?, ? `;
+            } else {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where}
+                        ORDER BY name, id LIMIT ?, ? `;
+            }
 
-        conn.query(sql, [body.board_code, start, end], (err, list) => {
-            if (err) console.log(err);
-            res.send({success: true, list: list, paging: paging, level: level});
-        })
+            conn.query(sql, [body.board_code, start, end], (err, list) => {
+                if (err) console.log(err);
+                res.send({success: true, list: list, paging: paging, level: level});
+            })
+        } else if (body.search == "day") {
+            if (body.standard == "day") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} AND regdate like ?
+                        ORDER BY num DESC LIMIT ?, ? `;
+            } else if (body.standard == "views") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} AND regdate like ?
+                        ORDER BY views DESC LIMIT ?, ? `;
+            } else {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} AND regdate like ?
+                        ORDER BY name, id LIMIT ?, ? `;
+            }
+
+            conn.query(sql, [body.board_code, body.day, start, end], (err, list) => {
+                if (err) console.log(err);
+                res.send({success: true, list: list, paging: paging, level: level});
+            })
+        } else if (body.search == "id") {
+            if (body.standard == "day") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} and id = ?
+                        ORDER BY num DESC LIMIT ?, ? `;
+            } else if (body.standard == "views") {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} and id = ?
+                        ORDER BY views DESC LIMIT ?, ? `;
+            } else {
+                sql = ` SELECT *
+                        FROM tb_board
+                        WHERE board_code = ? ${where} and id = ?
+                        ORDER BY name, id LIMIT ?, ? `;
+            }
+            conn.query(sql, [body.board_code, body.id, start, end], (err, list) => {
+                if (err) console.log(err);
+                res.send({success: true, list: list, paging: paging, level: level});
+            })
+        }
+        // if (body.standard == "day") {
+        //     sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where}
+        //         ORDER BY num DESC LIMIT ?, ? `;
+        // } else {
+        //     sql = ` SELECT *
+        //         FROM tb_board
+        //         WHERE board_code = ? ${where}
+        //         ORDER BY views DESC LIMIT ?, ? `;
+        // }
+        //
+        // conn.query(sql, [body.board_code, start, end], (err, list) => {
+        //     if (err) console.log(err);
+        //     res.send({success: true, list: list, paging: paging, level: level});
+        // })
     })
 }
 

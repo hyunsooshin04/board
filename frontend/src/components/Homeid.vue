@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h2>자유 게시판</h2>
+    <h2>{{ id }} 공지사항</h2>
     <div class="searchWrap">
       <input type="text" v-model="keyword" @keyup.enter="fnSearch"/><a href="javascript:;" @click="fnSearch"
                                                                        class="btnSearch btn">검색</a><br>
@@ -8,7 +8,6 @@
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
-        <option value="writer">작성자</option>
       </select>
     </div>
     <div class="listWrap">
@@ -34,7 +33,7 @@
           <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
           <td>{{ row.name }}</td>
           <td><a href="javascript:;" v-on:click="FnList(`` + row.id)">{{ row.id }}</a></td>
-          <td><a href="javascript:;" v-on:click="Fnday(`` +  row.regdate.substring(0, 10))">{{ row.regdate.substring(0, 10) }}</a></td>
+          <td>{{ row.regdate.substring(0, 10) }}</td>
           <td>{{ row.views }}</td>
         </tr>
         <tr v-if="list.length == 0">
@@ -71,7 +70,7 @@ export default {
   data() { //변수생성
     return {
       body: '',
-      board_code: 'board_list',
+      board_code: 'Home_list',
       list: '',
       no: '',
       paging: '',
@@ -83,6 +82,7 @@ export default {
       name: 'Guest',
       standard: 'day',
       level: '',
+      id: this.$route.query.id,
       day: '',
 
       paginavigation: function () {
@@ -98,12 +98,6 @@ export default {
     this.fnGetList();
   },
   methods: {
-    Fnday(day) {
-      this.body = {
-        day: day
-      }
-      this.$router.push({path: '/board/list/day', query: this.body});
-    },
     FnList(id) {
       this.body = {
         id: id
@@ -112,13 +106,13 @@ export default {
     },
     fnGetList() {
       this.body = {
+        day: this.day,
         board_code: this.board_code,
         keyword: this.keyword,
         page: this.page,
         standard: this.standard,
         id: this.id,
-        day: '',
-        search: 'all'
+        search: 'id'
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {
@@ -164,7 +158,6 @@ export default {
   },
   created: function () {
     this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
-    this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
     this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
   },
   watch: {

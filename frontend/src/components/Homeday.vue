@@ -8,6 +8,7 @@
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
+        <option value="writer">작성자</option>
       </select>
     </div>
     <div class="listWrap">
@@ -105,12 +106,13 @@ export default {
     },
     fnGetList() {
       this.body = {
-        day: this.day,
+        day: "%" + this.day + "%",
         board_code: this.board_code,
         keyword: this.keyword,
         page: this.page,
         standard: this.standard,
         id: this.id,
+        search: 'day'
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {

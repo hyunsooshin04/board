@@ -106,8 +106,8 @@ exports.userinfo = (req, res) => {
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
             if (err) console.log(err);
-            if (log[0].share == "false" && lv < 3) {
-                try {
+            try {
+                if (log[0].share == "false" && lv < 3) {
                     res.send({
                         name: log[0].name,
                         cont: "비공개 설정입니다.",
@@ -117,18 +117,7 @@ exports.userinfo = (req, res) => {
                         level: lv,
                         userlv: log[0].level
                     })
-                } catch (err) {
-                    res.send({
-                        name: "Guest",
-                        cont: "게스트 아이디입니다.",
-                        hobby: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        gender: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        city: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        userlv: 0,
-                    })
-                }
-            } else {
-                try {
+                } else { //공유가 비공개로 설정되어있을경우
                     res.send({
                         name: log[0].name,
                         cont: log[0].cont,
@@ -138,16 +127,17 @@ exports.userinfo = (req, res) => {
                         level: lv,
                         userlv: log[0].level
                     })
-                } catch (err) {
-                    res.send({
-                        name: "Guest",
-                        cont: "게스트 아이디입니다.",
-                        hobby: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        gender: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        city: "로그인을 한 뒤에 설정할 수 있습니다.",
-                        userlv: 0
-                    })
+
                 }
+            } catch (err) { //만약 로그인을 하지 않은 Guest아이디로 접근시
+                res.send({
+                    name: "Guest",
+                    cont: "게스트 아이디입니다.",
+                    hobby: "로그인을 한 뒤에 설정할 수 있습니다.",
+                    gender: "로그인을 한 뒤에 설정할 수 있습니다.",
+                    city: "로그인을 한 뒤에 설정할 수 있습니다.",
+                    userlv: 0,
+                })
             }
         }
     )

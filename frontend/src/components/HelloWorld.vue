@@ -8,6 +8,7 @@
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
+        <option value="writer">작성자</option>
       </select>
     </div>
     <div class="listWrap">
@@ -107,7 +108,7 @@ export default {
       this.body = {
         id: id
       }
-      this.$router.push({path: '/board/user/view', query: this.body});
+      this.$router.push({path: '/userid', query: this.body});
     },
     fnGetList() {
       this.body = {
@@ -117,6 +118,7 @@ export default {
         standard: this.standard,
         id: this.id,
         day: '',
+        search: 'all',
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {

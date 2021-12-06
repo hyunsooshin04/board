@@ -88,6 +88,16 @@ const routes = [
         path: "/day",
         name : "Homeday",
         component: () => import('../components/Homeday')
+    },
+    {
+        path: "/board/list/day",
+        name : "Listday",
+        component: () => import('../components/board/Listday')
+    },
+    {
+        path: "/userid",
+        name : "Homeid",
+        component: () => import('../components/Homeid')
     }
 ];
 
