@@ -5,9 +5,9 @@
       <thead>
       <tr>
         <th scope="cols">유저 리스트</th>
-        <th style="text-align: right" scope="cols"><span style="background-color: deepskyblue">
+        <th style="text-align: right" scope="cols"><span style="background-color: grey">
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : 관리자
-          <span style="background-color: skyblue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : 댓글 관리자
+          <span style="background-color: darkgray;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span> : 댓글 관리자
         </th>
       </tr>
       </thead>
@@ -58,11 +58,11 @@ export default {
 
 <style scoped>
 #lv3 {
-  background-color: deepskyblue;
+  background-color: grey;
 }
 
 #lv2 {
-  background-color: skyblue;
+  background-color: darkgray;
 }
 
 table.type09 {
@@ -86,7 +86,7 @@ table.type09 tbody th {
   font-weight: bold;
   vertical-align: top;
   border-bottom: 1px solid #ccc;
-  background: #f3f6f7;
+  background: #cccccc;
 }
 
 table.type09 td {

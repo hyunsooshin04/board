@@ -23,8 +23,8 @@
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
       <a href="javascript:;" @click="fnMod" class="btnAdd btn" v-if="edit">수정</a>
-      <a href="javascript:;" @click="book(`true`)" class="btnbookmark btn" v-if="bookmark">즐겨찾기 해제</a>
-      <a href="javascript:;" @click="book('false')" class="btnbookmark btn" v-if="!bookmark">즐겨찾기</a>
+      <a href="javascript:;" @click="book(`true`)" class="btnbookmark btn" v-if="bookmark && isLogin">즐겨찾기 해제</a>
+      <a href="javascript:;" @click="book('false')" class="btnbookmark btn" v-if="!bookmark && isLogin">즐겨찾기</a>
       <a v-if="del" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn">삭제</a>
     </div>
     <div id="comment">
@@ -66,7 +66,6 @@
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
@@ -92,6 +91,7 @@ export default {
       editsee: [],
       delsee: [],
       bookmark: false,
+      isLogin: '',
     }
   },
   mounted() {
@@ -100,11 +100,11 @@ export default {
   methods: {
     book(ck) {
       this.$axios.get('http://localhost:3000/api/board/user/bookmark/' + this.id + '/' + this.num + '/' + ck)
-      .then((res) => {
-        if (res.data.ok == "ok") alert("즐겨찾기가 해제되었습니다.");
-        if (res.data.ok == "Ok") alert("즐겨찾기가 등록되었습니다.");
-        this.fnGetView();
-      })
+          .then((res) => {
+            if (res.data.ok == "ok") alert("즐겨찾기가 해제되었습니다.");
+            if (res.data.ok == "Ok") alert("즐겨찾기가 등록되었습니다.");
+            this.fnGetView();
+          })
     },
     input_update(id) {
       let see = document.getElementsByClassName("see");
@@ -155,7 +155,6 @@ export default {
                 this.delsee.push(this.name != "Guest");
               } else this.delsee.push(false);
             }
-            console.log(this.delsee)
             this.list = res.data.list;
           })
     },
@@ -222,7 +221,7 @@ export default {
     }
   },
   created: function () {
-    this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
+    this.isLogin = localStorage.getItem("isLogin") == null ? false : true;
     this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
     this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
   },
@@ -325,9 +324,11 @@ h4 {
 .btnAdd {
   background: #43b984
 }
+
 .btnbookmark {
   background: darkkhaki;
 }
+
 .btnDelete {
   background: #f00;
 }

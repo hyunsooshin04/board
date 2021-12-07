@@ -41,6 +41,16 @@ create table `comment` (
    PRIMARY KEY (`no`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
  
+create table `bookmark` (
+   `num` int(10),
+   `no` int(10) NOT NULL AUTO_INCREMENT,
+   `id` varchar(50) DEFAULT NULL,
+   `regdate` datetime DEFAULT NULL,
+   PRIMARY KEY (`no`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+INSERT INTO  login_id (level,id, pwd, name, gender, share) values (3, "admin", "admin", "admin", "미설정", true);
+
 mysql installer > server 옆에 reconfigure > Auth 설정가서 legacy 선택 > 완료
 
  코드 실행전에 이걸 mysql에 쳐주고 계정 아이디 root 비밀번호 toor이 아닐시 config.js에서 user password 내용을 바꿔주면 코드 정상 작동

@@ -6,9 +6,6 @@ const conn = db.init();
 
 exports.list = (req, res) => {
     //리스트 모듈
-    // console.log(req.params);
-    // console.log(req.query);
-    // console.log(req.body)
     let ipp = 10;
     let totalCount = 0;
     let block = 10;
@@ -34,50 +31,83 @@ exports.list = (req, res) => {
 
     if (body.keyword) where += ` AND subject like '%${body.keyword}%' `;
     if (body.search == "bookmark") {
+        //북마크일때 처리문
         sql = ` SELECT count(*) cnt
                 FROM bookmark
                 WHERE id = ? ${where} `;
         conn.query(sql, [body.id], (err, data) => {
-            if (err) console.log(err);
-            totalCount = data[0].cnt;
-            total_page = Math.ceil(totalCount / ipp);
-            if (body.page) page = body.page;
-            start = (page - 1) * 10;
-            start_page = Math.ceil(page / block);
-            end_page = start_page * block;
-            if (total_page < end_page) end_page = total_page;
-            let paging = {
-                "totalCount": totalCount,
-                "total_page": total_page,
-                "page": page,
-                "start_page": start_page,
-                "end_page": end_page,
-                "ipp": ipp
-            }
-            sql = ` SELECT *
-                    FROM bookmark
-                    WHERE id = ? ${where}
-                    ORDER BY no DESC LIMIT ?, ? `;
-            conn.query(sql, [body.id, start, end], (err, data) => {
                 if (err) console.log(err);
-                for (let i = 0; i < data.length; i++) {
-                    if (i == data.length - 1) query += `num = ${data[i].num}`
-                    else query += `num = ${data[i].num} or `
+                totalCount = data[0].cnt;
+                total_page = Math.ceil(totalCount / ipp);
+                if (body.page) page = body.page;
+                start = (page - 1) * 10;
+                start_page = Math.ceil(page / block);
+                end_page = start_page * block;
+                if (total_page < end_page) end_page = total_page;
+                let paging = {
+                    "totalCount": totalCount,
+                    "total_page": total_page,
+                    "page": page,
+                    "start_page": start_page,
+                    "end_page": end_page,
+                    "ipp": ipp
                 }
-                sql = `select *
-                       from tb_board
-                       where ${query}`;
-                conn.query(sql, (err, list) => {
+                sql = ` SELECT *
+                        FROM bookmark
+                        WHERE id = ? ${where}
+                        ORDER BY no DESC LIMIT ?, ? `;
+                conn.query(sql, [body.id, start, end], (err, data) => {
                     if (err) console.log(err);
-                    res.send({success: true, list: list, paging: paging, level: level});
+                    for (let i = 0; i < data.length; i++) {
+                        if (data.length == 0) {
+                            console.log("데이터가 없음.")
+                            break;
+                        }
+                        if (i == data.length - 1) query += `num = ${data[i].num}`
+                        else query += `num = ${data[i].num} or `
+                    }
+                    if (data.length == 0) sql = `select *
+                                                 from tb_board
+                                                 where board_code = "nope"`
+                    else if (body.standard == "views") {
+                        sql = `select *
+                               from tb_board
+                               where ${query}
+                               ORDER BY views DESC `;
+                    } else if (body.standard == "writer") {
+                        sql = `select *
+                               from tb_board
+                               where ${query}
+                               ORDER BY name, id`;
+                    } else {
+                        sql = `select *
+                               from tb_board
+                               where ${query}`;
+                    }
+                    conn.query(sql, (err, list) => {
+                        if (err) console.log(err);
+                        res.send({success: true, list: list, paging: paging, level: level});
+                    })
                 })
-            })
-        })
+            }
+        )
     } else {
-        sql = ` SELECT count(*) cnt
-                FROM tb_board
-                WHERE board_code = ? ${where} `;
-        conn.query(sql, [body.board_code], (err, data) => {
+        //북마크가 아닐때 처리문
+        if (body.day == '') {
+            sql = ` SELECT count(*) cnt
+                    FROM tb_board
+                    WHERE board_code = ? ${where} `;
+        }
+        if (body.search == 'id') {
+            sql = ` SELECT count(*) cnt
+                    FROM tb_board
+                    WHERE board_code = ? ${where} AND id = ?`;
+        } else sql = ` SELECT count(*) cnt
+                       FROM tb_board
+                       WHERE board_code = ? ${where} AND regdate like ?`;
+        if (body.day == '') input = [body.board_code, body.day]
+        if (body.search == 'id') input = [body.board_code, body.id]
+        conn.query(sql, input, (err, data) => {
             if (err) console.log(err);
             totalCount = data[0].cnt;
             total_page = Math.ceil(totalCount / ipp);
@@ -183,13 +213,17 @@ exports.list = (req, res) => {
 exports.bookmark = (req, res) => {
     console.log(req.params.id + " " + req.params.num);
     if (req.params.isbookmark == "true") {
-        sql = ` DELETE FROM bookmark WHERE id = ? and num = ?`;
+        sql = ` DELETE
+                FROM bookmark
+                WHERE id = ?
+                  and num = ?`;
         conn.query(sql, [req.params.id, req.params.num], (err, log) => {
             if (err) console.log(err);
             else res.send({ok: "ok"})
         })
     } else {
-        sql = ` INSERT INTO bookmark (id, num, regdate) values (?, ?, now())`
+        sql = ` INSERT INTO bookmark (id, num, regdate)
+                values (?, ?, now())`
         conn.query(sql, [req.params.id, req.params.num], (err, log) => {
             if (err) console.log(err);
             else res.send({ok: "Ok"});
@@ -219,8 +253,10 @@ exports.view = (req, res) => {
     body = req.query;
     num = req.params.num;
     let bookmark = false;
-    sql = ` SELECT * FROM bookmark WHERE id = ?`;
-    conn.query(sql,(req.params.id), (err, log) => {
+    sql = ` SELECT *
+            FROM bookmark
+            WHERE id = ?`;
+    conn.query(sql, (req.params.id), (err, log) => {
         if (err) console.log(err);
         for (let i = 0; i < log.length; i++) {
             if (log[i].num == req.params.num) bookmark = true
