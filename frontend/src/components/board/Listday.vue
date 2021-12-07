@@ -84,6 +84,7 @@ export default {
       standard: 'day',
       level: '',
       day: this.$route.query.day,
+      search: 'day',
 
       paginavigation: function () {
         var pageNumber = [];
@@ -112,7 +113,8 @@ export default {
         page: this.page,
         standard: this.standard,
         id: this.id,
-        search: 'day'
+        search: 'day',
+        isLogin: this.isLogin
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {

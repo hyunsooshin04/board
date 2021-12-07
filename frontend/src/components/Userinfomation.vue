@@ -11,6 +11,7 @@
               <option value="1">일반계정</option>
               <option value="2">댓글관리자계정</option>
               <option value="3">관리자계정</option>
+              <option value="del">유저 삭제</option>
             </select>
             <button v-on:click="updatepower">권한 부여</button>
 <!--            <button>유저 정보 삭제</button>-->
@@ -59,7 +60,7 @@ export default {
       hobby: '미설정',
       status_message: '미설정',
       city: '미설정',
-      userid: localStorage.getItem("id"),
+      userid: localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id"),
       lv: '',
       selectlv: '1',
     }
@@ -82,6 +83,10 @@ export default {
       this.$axios.get('http://localhost:3000/api/userinfo/update/' + this.id + "/" + this.selectlv)
       .then((res) => {
         if (res.data.ok == "ok") alert("수정되었습니다.")
+        if (res.data.ok == "del") {
+          alert("삭제되었습니다.");
+          history.back()
+        }
       })
     }
   },

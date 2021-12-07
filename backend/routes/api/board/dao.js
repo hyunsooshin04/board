@@ -20,6 +20,8 @@ exports.list = (req, res) => {
     let level = "";
     let data = {};
     let query = '';
+    let isLogin = body.isLogin;
+    let logquery = '';
     sql = ' SELECT * FROM login_id WHERE id = ?';
     conn.query(sql, (body.id), (err, log) => {
         try {
@@ -38,7 +40,7 @@ exports.list = (req, res) => {
         conn.query(sql, [body.id], (err, data) => {
                 if (err) console.log(err);
                 totalCount = data[0].cnt;
-                total_page = Math.ceil(totalCount / ipp);
+                total_page = Math.ceil(totalCount / ipp); //페이지 수를 /10 한뒤 올림을 해 정수로 구함
                 if (body.page) page = body.page;
                 start = (page - 1) * 10;
                 start_page = Math.ceil(page / block);
@@ -59,10 +61,7 @@ exports.list = (req, res) => {
                 conn.query(sql, [body.id, start, end], (err, data) => {
                     if (err) console.log(err);
                     for (let i = 0; i < data.length; i++) {
-                        if (data.length == 0) {
-                            console.log("데이터가 없음.")
-                            break;
-                        }
+                        if (data.length == 0) break;
                         if (i == data.length - 1) query += `num = ${data[i].num}`
                         else query += `num = ${data[i].num} or `
                     }
@@ -92,21 +91,27 @@ exports.list = (req, res) => {
             }
         )
     } else {
-        //북마크가 아닐때 처리문
-        if (body.day == '') {
-            sql = ` SELECT count(*) cnt
-                    FROM tb_board
-                    WHERE board_code = ? ${where} `;
+        if (body.isLogin == "true") ;
+        else {
+            logquery = ' AND isLogin = "false" '
         }
-        if (body.search == 'id') {
+        //북마크가 아닐때 처리문
+        if (body.search == 'id') { //특정 작성자가 작성한 게시글만 모으고 싶은 경우
             sql = ` SELECT count(*) cnt
                     FROM tb_board
-                    WHERE board_code = ? ${where} AND id = ?`;
-        } else sql = ` SELECT count(*) cnt
-                       FROM tb_board
-                       WHERE board_code = ? ${where} AND regdate like ?`;
-        if (body.day == '') input = [body.board_code, body.day]
-        if (body.search == 'id') input = [body.board_code, body.id]
+                    WHERE board_code = ? ${where} AND id = ? ${logquery}`;
+            input = [body.board_code, body.id]
+        } else if (body.search == 'day') { //특정 날짜에 작성된 게시글만 모으고 싶은 경우
+            sql = ` SELECT count(*) cnt
+                    FROM tb_board
+                    WHERE board_code = ? ${where} AND regdate like ? ${logquery}`;
+            input = [body.board_code, body.day]
+        } else { //전체 게시글 보기
+            sql = ` SELECT count(*) cnt
+                    FROM tb_board
+                    WHERE board_code = ? ${where} ${logquery}`;
+            input = [body.board_code];
+        }
         conn.query(sql, input, (err, data) => {
             if (err) console.log(err);
             totalCount = data[0].cnt;
@@ -128,17 +133,17 @@ exports.list = (req, res) => {
                 if (body.standard == "day") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where}
+                            WHERE board_code = ? ${where} ${logquery}
                             ORDER BY num DESC LIMIT ?, ? `;
                 } else if (body.standard == "views") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where}
+                            WHERE board_code = ? ${where} ${logquery}
                             ORDER BY views DESC LIMIT ?, ? `;
                 } else {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where}
+                            WHERE board_code = ? ${where} ${logquery}
                             ORDER BY name, id LIMIT ?, ? `;
                 }
 
@@ -150,17 +155,17 @@ exports.list = (req, res) => {
                 if (body.standard == "day") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} AND regdate like ?
+                            WHERE board_code = ? ${where} AND regdate like ? ${logquery}
                             ORDER BY num DESC LIMIT ?, ? `;
                 } else if (body.standard == "views") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} AND regdate like ?
+                            WHERE board_code = ? ${where} AND regdate like ? ${logquery}
                             ORDER BY views DESC LIMIT ?, ? `;
                 } else {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} AND regdate like ?
+                            WHERE board_code = ? ${where} AND regdate like ? ${logquery}
                             ORDER BY name, id LIMIT ?, ? `;
                 }
 
@@ -172,17 +177,17 @@ exports.list = (req, res) => {
                 if (body.standard == "day") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} and id = ?
+                            WHERE board_code = ? ${where} and id = ? ${logquery}
                             ORDER BY num DESC LIMIT ?, ? `;
                 } else if (body.standard == "views") {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} and id = ?
+                            WHERE board_code = ? ${where} and id = ? ${logquery}
                             ORDER BY views DESC LIMIT ?, ? `;
                 } else {
                     sql = ` SELECT *
                             FROM tb_board
-                            WHERE board_code = ? ${where} and id = ?
+                            WHERE board_code = ? ${where} and id = ? ${logquery}
                             ORDER BY name, id LIMIT ?, ? `;
                 }
                 conn.query(sql, [body.board_code, body.id, start, end], (err, list) => {
@@ -190,28 +195,11 @@ exports.list = (req, res) => {
                     res.send({success: true, list: list, paging: paging, level: level});
                 })
             }
-            // if (body.standard == "day") {
-            //     sql = ` SELECT *
-            //         FROM tb_board
-            //         WHERE board_code = ? ${where}
-            //         ORDER BY num DESC LIMIT ?, ? `;
-            // } else {
-            //     sql = ` SELECT *
-            //         FROM tb_board
-            //         WHERE board_code = ? ${where}
-            //         ORDER BY views DESC LIMIT ?, ? `;
-            // }
-            //
-            // conn.query(sql, [body.board_code, start, end], (err, list) => {
-            //     if (err) console.log(err);
-            //     res.send({success: true, list: list, paging: paging, level: level});
-            // })
         })
     }
 }
 
 exports.bookmark = (req, res) => {
-    console.log(req.params.id + " " + req.params.num);
     if (req.params.isbookmark == "true") {
         sql = ` DELETE
                 FROM bookmark
@@ -233,8 +221,12 @@ exports.bookmark = (req, res) => {
 
 exports.mod = (req, res) => {
     body = req.body;
-    sql = " UPDATE tb_board SET subject = ?, cont = ?, editdate = now() WHERE num = ? ";
-    conn.query(sql, [body.subject, body.cont, body.num], (err, result) => {
+    console.log(body)
+    let see = '';
+    if (body.see) see = "true";
+    else see = "false";
+    sql = " UPDATE tb_board SET subject = ?, cont = ?, editdate = now(), isLogin = ? WHERE num = ? ";
+    conn.query(sql, [body.subject, body.cont, see, body.num], (err, result) => {
         if (err) console.log(err);
         res.send({success: true});
     })
@@ -268,7 +260,7 @@ exports.view = (req, res) => {
         sql = " SELECT level, id FROM login_id WHERE id = ?";
         conn.query(sql, (req.params.id), (err, log) => {
             if (err) console.log(err);
-            res.send({success: true, view: view, user: log[0], bookmark: bookmark});
+            res.send({success: true, view: view, user: log[0], bookmark: bookmark, board_code: view[0].board_code});
         })
     });
     sql = " UPDATE tb_board SET views = views + 1 WHERE num = ?"
@@ -279,9 +271,12 @@ exports.view = (req, res) => {
 
 exports.add = (req, res) => { //등록 프로세스 모듈
     body = req.body; //전송된 데이터를 받는다.
-    sql = " INSERT INTO  tb_board (board_code, subject, cont, id, name, regdate, views) values (?, ?, ?, ?, ?,now(), 0) ";
+    let see = '';
+    if (body.see) see = "true";
+    else see = "false";
+    sql = " INSERT INTO  tb_board (board_code, subject, cont, id, name, regdate, views, isLogin) values (?, ?, ?, ?, ?,now(), 0, ?) ";
     conn.query(sql,
-        [body.board_code, body.subject, body.cont, body.id, body.name],
+        [body.board_code, body.subject, body.cont, body.id, body.name, see],
         (err, result) => {
             if (err) console.log(err);
 

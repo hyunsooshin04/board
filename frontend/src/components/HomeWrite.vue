@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>공지사항 {{ num ? '수정' : '등록' }}</h1>
-
+    로그인 한 유저에게만 보이기 : <input type="checkbox" v-model="see">
     <div class="AddWrap">
       <form>
         <table class="tbAdd">
@@ -41,7 +41,8 @@ export default {
       body: this.$route.query,
       form: '',
       num: this.$route.query.num,
-      name: 'Guest'
+      name: 'Guest',
+      see: false,
     }
   },
   mounted() {
@@ -80,7 +81,8 @@ export default {
         subject: this.subject,
         cont: this.cont,
         id: this.id,
-        name: this.name
+        name: this.name,
+        see: this.see
       }
 
       this.$axios.post('http://localhost:3000/api/board', this.form)
@@ -109,7 +111,8 @@ export default {
         subject: this.subject,
         cont: this.cont,
         id: this.id,
-        num: this.num
+        num: this.num,
+        see: this.see
       }
 
       this.$axios.put('http://localhost:3000/api/board', this.form)

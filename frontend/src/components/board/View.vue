@@ -92,6 +92,7 @@ export default {
       delsee: [],
       bookmark: false,
       isLogin: '',
+      board_code: '',
     }
   },
   mounted() {
@@ -180,6 +181,7 @@ export default {
     fnGetView() {
       this.$axios.get('http://localhost:3000/api/board/' + this.body.num + '/' + this.id, {params: this.body})
           .then((res) => {
+            this.board_code = res.data.board_code;
             this.view = res.data.view[0];
             this.subject = this.view.subject;
             this.cont = this.view.cont.replace(/(\n)/g, '<br/>');
@@ -209,7 +211,9 @@ export default {
             .then((res) => {
               if (res.data.result) {
                 alert("삭제되었습니다.");
-                this.fnList();
+                // this.fnList();
+                if (this.board_code == 'board_list') location.href = "http://localhost:8080/board/list"
+                else location.href = "http://localhost:8080/"
               } else {
                 alert("실행중 실패했습니다.\n다시 이용해 주세요.");
               }

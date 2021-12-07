@@ -11,7 +11,8 @@ CREATE TABLE `tb_board` (
    `name` char(20) DEFAULT NULL,
    `regdate` datetime DEFAULT NULL,
    `editdate` datetime DEFAULT NULL,
-   `views` int(10),
+   `views` int(10),,
+   `isLogin` char(20) DEFAULT NULL,
    PRIMARY KEY (`num`)
  ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 

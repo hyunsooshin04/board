@@ -119,6 +119,7 @@ export default {
         id: this.id,
         day: '',
         search: 'all',
+        isLogin: this.isLogin, //로그인을 했는지 보냄
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {

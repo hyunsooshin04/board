@@ -17,10 +17,10 @@
         </li>
         <!--        <li v-if="isLogin"><router-link to="/logout">로그아웃</router-link></li>-->
         <li v-if="isLogin"><label for="menu-toggle">{{ name }} 님</label>
-          <input type="checkbox" id="menu-toggle"/>
+          <input type="checkbox" id="menu-toggle" v-model="toggle"/>
           <ul id="menu"><br>
             <li>
-              <router-link to="/user/bookmark">즐겨 찾기</router-link>
+              <router-link to="/user/bookmark">즐겨찾기</router-link>
             </li>
             <li>
               <router-link to="/myinformation">내정보</router-link>
@@ -31,7 +31,7 @@
             </li>
             <br>
             <li>
-              <a href="http://localhost:8080/" v-on:click="logout">로그 아웃</a>
+              <a href="http://localhost:8080/" v-on:click="logout">로그아웃</a>
             </li>
           </ul>
         </li>
@@ -48,6 +48,7 @@ export default {
     return {
       isLogin: "false",
       name: "Guest",
+      toggle: false,
     }
   },
   methods: {
@@ -72,13 +73,14 @@ header {
   width: 100%;
   text-align: center;
   position: relative;
-  height: 10vh;
+  height: 8.5vh;
   border-bottom: 1px solid #35495e
 }
 
 header h1 {
+  margin: 0;
+  padding: 2vh 0 0;
   position: absolute;
-  top: 0;
   left: 100px;
 }
 
@@ -95,7 +97,7 @@ header ul.menu {
 
 header ul.menu li {
   float: left;
-  padding: 10px 20px;
+  padding: 1vh 2vh;
   list-style: none;
 }
 
@@ -113,7 +115,7 @@ label {
 }
 
 #menu {
-  padding-top: 10px;
+  padding-top: 1vh;
   display: none;
   list-style: none;
   width: auto;
@@ -121,10 +123,12 @@ label {
 }
 
 #menu li {
-  width: 50px;
+  width: 65px;
 }
 
 #menu-toggle:checked + #menu {
   display: block;
 }
+
+
 </style>

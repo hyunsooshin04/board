@@ -98,10 +98,15 @@ exports.editpwd = (req, res) => {
 
 exports.userinfo = (req, res) => {
     let lv = '';
+    console.log(req.params.userid)
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.userid), (err, log) => {
-        if (err) lv = 0;
-        else lv = log[0].level;
+        if (err) console.log(err);
+        try {
+            lv = log[0].level;
+        } catch {
+            lv = 0;
+        }
     })
     sql = " SELECT * FROM login_id WHERE id = ?";
     conn.query(sql, (req.params.id), (err, log) => {
@@ -145,8 +150,17 @@ exports.userinfo = (req, res) => {
 
 
 exports.updatelevel = (req, res) => {
-    sql = " UPDATE login_id SET level = ? WHERE id = ?";
-    conn.query(sql, [req.params.level, req.params.id], (err, log) => {
-        res.send({ok: "ok"})
-    })
+    if (req.params.level == "del") {
+        sql = ' DELETE FROM login_id WHERE id = ?';
+        conn.query(sql, [req.params.id], (err, log) => {
+            if (err) console.log(err);
+            res.send({ok: "del"})
+        })
+    } else {
+        sql = " UPDATE login_id SET level = ? WHERE id = ?";
+        conn.query(sql, [req.params.level, req.params.id], (err, log) => {
+            if (err) console.log(err);
+            res.send({ok: "ok"})
+        })
+    }
 }

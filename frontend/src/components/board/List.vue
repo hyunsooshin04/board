@@ -119,6 +119,7 @@ export default {
         id: this.id,
         day: '',
         search: 'all',
+        isLogin: this.isLogin
       }
       this.$axios.get('http://localhost:3000/api/board', {params: this.body})
           .then((res) => {
