@@ -23,6 +23,8 @@ router.get("/user/bookmark/:id/:num/:isbookmark", dao.bookmark)
 
 router.get('/user/list/get', dao.userlist)
 
+router.get('/user/view/like', dao.isLike)
+
 router.all('*',(req, res)=> {
     res.status(404).send({success:false, msg:'board unknown uri ${req.path}'});
 })

@@ -22,9 +22,11 @@
 
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
-      <a href="javascript:;" @click="fnMod" class="btnAdd btn" v-if="edit">수정</a>
+      <a href="javascript:;" @click="updateLike" class="btnlike btn" v-if="!isLiked">추천 {{ cnt }}</a>
+      <a href="javascript:;" @click="updateLike" class="btnliked btn" v-if="isLiked">추천 {{ cnt }}</a>
       <a href="javascript:;" @click="book(`true`)" class="btnbookmark btn" v-if="bookmark && isLogin">즐겨찾기 해제</a>
       <a href="javascript:;" @click="book('false')" class="btnbookmark btn" v-if="!bookmark && isLogin">즐겨찾기</a>
+      <a href="javascript:;" @click="fnMod" class="btnAdd btn" v-if="edit">수정</a>
       <a v-if="del" href="javascript:;" @click="fnDeleteProc" class="btnDelete btn">삭제</a>
     </div>
     <div id="comment">
@@ -93,6 +95,8 @@ export default {
       bookmark: false,
       isLogin: '',
       board_code: '',
+      isLiked: '',
+      cnt: '',
     }
   },
   mounted() {
@@ -178,15 +182,38 @@ export default {
             })
       }
     },
+    updateLike() {
+      this.form = {
+        id: this.id,
+        num: this.num,
+        isLike: this.isLiked,
+
+      }
+      this.$axios.get('http://localhost:3000/api/board/user/view/like', {params: this.form})
+      .then((res) => {
+        if (res.data.ok == "del") {
+          alert("추천이 해제되었습니다.");
+          this.fnGetView();
+        } else if (res.data.ok == "ok") {
+          alert("추천 되었습니다.");
+          this.fnGetView();
+        } else if (res.data.ok == 'guest') {
+          alert("로그인을 한 뒤 이용해주세요.")
+        }
+      })
+    },
     fnGetView() {
       this.$axios.get('http://localhost:3000/api/board/' + this.body.num + '/' + this.id, {params: this.body})
           .then((res) => {
+            this.cnt = res.data.cnt;
             this.board_code = res.data.board_code;
             this.view = res.data.view[0];
             this.subject = this.view.subject;
             this.cont = this.view.cont.replace(/(\n)/g, '<br/>');
             this.userlv = parseInt(res.data.user.level);
             this.bookmark = res.data.bookmark;
+            this.isLiked = res.data.isLiked;
+            // this.cnt = res.data.cnt;
             if (res.data.user.id == this.view.id) this.edit = true;
             if (this.userlv == 3 || res.data.user.id == this.view.id) this.del = true;
             this.CommentGet();
@@ -198,7 +225,10 @@ export default {
     ,
     fnList() {
       delete this.body.num;
-      this.$router.push({path: './list', query: this.body});
+      // history.back();
+      if (this.board_code == 'board_list') location.href = "http://localhost:8080/board/list"
+      else location.href = "http://localhost:8080/"
+      // this.$router.push({path: './list', query: this.body});
     }
     ,
     fnMod() {
@@ -357,5 +387,12 @@ button {
   background-color: #1BBC9B;
   color: white;
   border: none;
+}
+.btnlike {
+  background: darkgrey;
+}
+.btnliked {
+  background: darkgrey;
+  color: yellow;
 }
 </style>

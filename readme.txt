@@ -11,8 +11,9 @@ CREATE TABLE `tb_board` (
    `name` char(20) DEFAULT NULL,
    `regdate` datetime DEFAULT NULL,
    `editdate` datetime DEFAULT NULL,
-   `views` int(10),,
+   `views` int(10),
    `isLogin` char(20) DEFAULT NULL,
+   `like` int(10) DEFAULT 0,
    PRIMARY KEY (`num`)
  ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
@@ -31,7 +32,12 @@ CREATE TABLE `login_id` (
    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
- 
+CREATE TABLE `liked` (
+   `isLike` char(20) DEFAULT "false",
+   `id` char(20) NOT NULL,
+   `num` int(10) NOT NULL
+);
+
 create table `comment` (
    `no` int(10) NOT NULL AUTO_INCREMENT,
    `id` char(20) NOT NULL,

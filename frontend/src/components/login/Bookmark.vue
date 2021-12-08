@@ -2,13 +2,15 @@
   <div>
     <h2>즐겨찾기</h2>
     <div class="searchWrap">
-      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;" @click="fnSearch"
+      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;"
+                                                                                                  @click="fnSearch"
                                                                                                   class="btnSearch btn">검색</a><br>
       <span>정렬 기준 : </span>
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
         <option value="writer">작성자 아이디</option>
+        <option value="like">추천수</option>
       </select>
     </div>
     <div class="listWrap">
@@ -34,7 +36,8 @@
           <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
           <td>{{ row.name }}</td>
           <td><a href="javascript:;" v-on:click="FnList(`` + row.id)">{{ row.id }}</a></td>
-          <td><a href="javascript:;" v-on:click="Fnday(`` +  row.regdate.substring(0, 10))">{{ row.regdate.substring(0, 10) }}</a></td>
+          <td><a href="javascript:;"
+                 v-on:click="Fnday(`` +  row.regdate.substring(0, 10))">{{ row.regdate.substring(0, 10) }}</a></td>
           <td>{{ row.views }}</td>
         </tr>
         <tr v-if="list.length == 0">

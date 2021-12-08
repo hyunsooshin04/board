@@ -8,6 +8,7 @@
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
+        <option value="like">추천수</option>
       </select>
     </div>
     <div class="listWrap">

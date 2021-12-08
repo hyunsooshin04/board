@@ -2,13 +2,15 @@
   <div>
     <h2>{{ day }} 공지사항</h2>
     <div class="searchWrap">
-      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;" @click="fnSearch"
-                                                                       class="btnSearch btn">검색</a><br>
+      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;"
+                                                                                                  @click="fnSearch"
+                                                                                                  class="btnSearch btn">검색</a><br>
       <span>정렬 기준 : </span>
       <select v-model="standard">
         <option value="day">작성시간</option>
         <option value="views">조회수</option>
         <option value="writer">작성자</option>
+        <option value="like">추천수</option>
       </select>
     </div>
     <div class="listWrap">
