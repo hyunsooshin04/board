@@ -242,7 +242,6 @@ exports.bookmark = (req, res) => {
 
 exports.mod = (req, res) => {
     body = req.body;
-    console.log(body)
     let see = '';
     if (body.see) see = "true";
     else see = "false";
@@ -323,7 +322,6 @@ exports.view = (req, res) => {
 exports.isLike = (req, res) => {
     let query = req.query;
     let like_cnt = '';
-    console.log(query)
     if (query.id == 'Guest') {
         res.send({ok: "guest"})
     } else if (query.isLike == 'false') {

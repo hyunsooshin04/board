@@ -1,18 +1,21 @@
 <template>
   <div>
-    <h1>게시판 {{ num ? '수정' : '등록' }}</h1>
-    로그인 한 유저에게만 보이기 : <input type="checkbox" v-model="see">
+    <h1>게시판 {{ num ? "수정" : "등록" }}</h1>
+    <span v-if="id != 'Guest'"
+      >로그인 한 유저에게만 보이기 : <input type="checkbox" v-model="see"
+    /></span>
     <div class="AddWrap">
       <form>
         <table class="tbAdd">
           <colgroup>
-            <col width="15%"/>
-            <col width="*"/>
+            <col width="15%" />
+            <col width="*" />
           </colgroup>
           <tr>
             <th>제목</th>
             <td>
-              <input type="text" v-model="subject" ref="subject"/></td>
+              <input type="text" v-model="subject" ref="subject" />
+            </td>
           </tr>
           <tr>
             <th>내용</th>
@@ -24,8 +27,12 @@
 
     <div class="btnWrap">
       <a href="javascript:;" @click="fnList" class="btn">목록</a>
-      <a v-if="!num" href="javascript:;" @click="fnAddProc" class="btnAdd btn">등록</a>
-      <a v-else href="javascript:;" @click="fnModProc" class="btnAdd btn">수정</a>
+      <a v-if="!num" href="javascript:;" @click="fnAddProc" class="btnAdd btn"
+        >등록</a
+      >
+      <a v-else href="javascript:;" @click="fnModProc" class="btnAdd btn"
+        >수정</a
+      >
     </div>
   </div>
 </template>
@@ -34,16 +41,16 @@
 export default {
   data() {
     return {
-      board_code: 'board_list',
-      subject: '',
-      cont: '',
-      id: 'Guest',
+      board_code: "board_list",
+      subject: "",
+      cont: "",
+      id: "Guest",
       body: this.$route.query,
-      form: '',
+      form: "",
       num: this.$route.query.num,
-      name: 'Guest',
+      name: "Guest",
       see: false,
-    }
+    };
   },
   mounted() {
     if (this.num) {
@@ -53,22 +60,35 @@ export default {
   methods: {
     fnList() {
       delete this.body.num;
-      this.$router.push({path: './list', query: this.body});
-
+      this.$router.push({ path: "./list", query: this.body });
     },
+    // fnGetView() {
+    //   this.$axios
+    //     .get("http://localhost:3000/api/board/" + this.body.num, {
+    //       params: this.body,
+    //     })
+    //     .then((res) => {
+    //       this.view = res.data.view[0];
+    //       this.subject = this.view.subject;
+    //       this.cont = this.view.cont;
+    //     })
+    //     .catch((err) => {
+    //       console.log(err);
+    //     });
+    // },
     fnGetView() {
-      this.$axios.get('http://localhost:3000/api/board/' + this.body.num, {params: this.body})
+      this.$axios.get('http://localhost:3000/api/board/' + this.body.num + '/' + this.id, {params: this.body})
           .then((res) => {
             this.view = res.data.view[0];
             this.subject = this.view.subject;
-            this.cont = this.view.cont;
+            this.cont = this.view.cont.replace(/(\n)/g, '<br/>');
           })
           .catch((err) => {
             console.log(err);
           })
     },
     fnView() {
-      this.$router.push({path: './view', "query": this.body});
+      this.$router.push({ path: "./view", query: this.body });
     },
     fnAddProc() {
       if (!this.subject) {
@@ -83,22 +103,22 @@ export default {
         cont: this.cont,
         id: this.id,
         name: this.name,
-        see: this.see
-      }
+        see: this.see,
+      };
 
-      this.$axios.post('http://localhost:3000/api/board', this.form)
-          .then((res) => {
-            if (res.data.success) {
-              alert('등록되었습니다.');
-              this.fnList();
-            } else {
-              alert("실행중 실패했습니다.\n다시 이용해 주세요");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-
+      this.$axios
+        .post("http://localhost:3000/api/board", this.form)
+        .then((res) => {
+          if (res.data.success) {
+            alert("등록되었습니다.");
+            this.fnList();
+          } else {
+            alert("실행중 실패했습니다.\n다시 이용해 주세요");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     fnModProc() {
       if (!this.subject) {
@@ -113,31 +133,36 @@ export default {
         cont: this.cont,
         id: this.id,
         num: this.num,
-        see: this.see
-      }
+        see: this.see,
+      };
 
-      this.$axios.put('http://localhost:3000/api/board', this.form)
-          .then((res) => {
-            if (res.data.success) {
-              alert('수정되었습니다.');
-              this.fnView();
-            } else {
-              alert("실행중 실패했습니다.\n다시 이용해 주세요");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          })
-    }
+      this.$axios
+        .put("http://localhost:3000/api/board", this.form)
+        .then((res) => {
+          if (res.data.success) {
+            alert("수정되었습니다.");
+            this.fnView();
+          } else {
+            alert("실행중 실패했습니다.\n다시 이용해 주세요");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
   },
   created: function () {
     this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
     // console.log(this.isLogin)
-    this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
-    this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    this.id =
+      localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.name =
+      localStorage.getItem("name") == null
+        ? "Guest"
+        : localStorage.getItem("name");
     // console.log(this.name)
-  }
-}
+  },
+};
 </script>
 
 <style scoped>
@@ -145,7 +170,8 @@ export default {
   border-top: 1px solid #888;
 }
 
-.tbAdd th, .tbAdd td {
+.tbAdd th,
+.tbAdd td {
   border-bottom: 1px solid #eee;
   padding: 5px 0;
 }
@@ -179,7 +205,7 @@ export default {
 }
 
 .btnAdd {
-  background: #43b984
+  background: #43b984;
 }
 
 .btnDelete {

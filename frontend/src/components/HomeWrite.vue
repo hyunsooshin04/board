@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>공지사항 {{ num ? '수정' : '등록' }}</h1>
-    로그인 한 유저에게만 보이기 : <input type="checkbox" v-model="see">
+    <span v-if="id != 'Guest'">로그인 한 유저에게만 보이기 : <input type="checkbox" v-model="see"></span>
     <div class="AddWrap">
       <form>
         <table class="tbAdd">

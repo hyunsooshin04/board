@@ -2,8 +2,13 @@
   <div>
     <h2>공지사항</h2>
     <div class="searchWrap">
-      <input type="text" v-model="keyword" @keyup.enter="fnSearch" placeholder="검색어를 입력해주세요."/><a href="javascript:;" @click="fnSearch"
-                                                                       class="btnSearch btn">검색</a><br>
+      <input
+        type="text"
+        v-model="keyword"
+        @keyup.enter="fnSearch"
+        placeholder="검색어를 입력해주세요."
+      /><a href="javascript:;" @click="fnSearch" class="btnSearch btn">검색</a
+      ><br />
       <span>정렬 기준 : </span>
       <select v-model="standard">
         <option value="day">작성시간</option>
@@ -15,12 +20,12 @@
     <div class="listWrap">
       <table class="tbList">
         <colgroup>
-          <col width="6%"/>
-          <col width="*"/>
-          <col width="10%"/>
-          <col width="10%"/>
-          <col width="15%"/>
-          <col width="10%"/>
+          <col width="6%" />
+          <col width="*" />
+          <col width="10%" />
+          <col width="10%" />
+          <col width="15%" />
+          <col width="10%" />
         </colgroup>
         <tr>
           <th>no</th>
@@ -32,10 +37,24 @@
         </tr>
         <tr v-for="(row, idx) in list" :key="idx">
           <td>{{ no - idx }}</td>
-          <td class="txt_left"><a href="javascript:;" @click="fnView(`${row.num}`)">{{ row.subject }}</a></td>
+          <td class="txt_left">
+            <a href="javascript:;" @click="fnView(`${row.num}`)">{{
+              row.subject
+            }}</a>
+          </td>
           <td>{{ row.name }}</td>
-          <td><a href="javascript:;" v-on:click="FnList(`` + row.id)">{{ row.id }}</a></td>
-          <td><a href="javascript:;" v-on:click="Fnday(`` +  row.regdate.substring(0, 10))">{{ row.regdate.substring(0, 10) }}</a></td>
+          <td>
+            <a href="javascript:;" v-on:click="FnList(`` + row.id)">{{
+              row.id
+            }}</a>
+          </td>
+          <td>
+            <a
+              href="javascript:;"
+              v-on:click="Fnday(`` + row.regdate.substring(0, 10))"
+              >{{ row.regdate.substring(0, 10) }}</a
+            >
+          </td>
           <td>{{ row.views }}</td>
         </tr>
         <tr v-if="list.length == 0">
@@ -46,19 +65,36 @@
 
     <div class="pagination" v-if="paging.totalCount > 0">
       <a href="javascript:;" @click="fnPage(1)" class="first">&lt;&lt;</a>
-      <a href="javascript:;" v-if="paging.start_page > 10" @click="fnPage(`${paging.start_page-1}`)"
-         class="prev">&lt;</a>
-      <template v-for=" (n,index) in paginavigation()">
+      <a
+        href="javascript:;"
+        v-if="paging.start_page > 10"
+        @click="fnPage(`${paging.start_page - 1}`)"
+        class="prev"
+        >&lt;</a
+      >
+      <template v-for="(n, index) in paginavigation()">
         <template v-if="paging.page == n">
           <strong :key="index">{{ n }}</strong>
         </template>
         <template v-else>
-          <a href="javascript:;" @click="fnPage(`${n}`)" :key="index">{{ n }}</a>
+          <a href="javascript:;" @click="fnPage(`${n}`)" :key="index">{{
+            n
+          }}</a>
         </template>
       </template>
-      <a href="javascript:;" v-if="paging.total_page > paging.end_page" @click="fnPage(`${paging.end_page+1}`)"
-         class="next">&gt;</a>
-      <a href="javascript:;" @click="fnPage(`${paging.total_page}`)" class="last">&gt;&gt;</a>
+      <a
+        href="javascript:;"
+        v-if="paging.total_page > paging.end_page"
+        @click="fnPage(`${paging.end_page + 1}`)"
+        class="next"
+        >&gt;</a
+      >
+      <a
+        href="javascript:;"
+        @click="fnPage(`${paging.total_page}`)"
+        class="last"
+        >&gt;&gt;</a
+      >
     </div>
 
     <div class="btnRightWrap">
@@ -69,22 +105,23 @@
 
 <script>
 export default {
-  data() { //변수생성
+  data() {
+    //변수생성
     return {
-      body: '',
-      board_code: 'Home_list',
-      list: '',
-      no: '',
-      paging: '',
-      start_page: '',
-      views: '',
+      body: "",
+      board_code: "Home_list",
+      list: "",
+      no: "",
+      paging: "",
+      start_page: "",
+      views: "",
       page: this.$route.query.page ? this.$route.query.page : 1,
       keyword: this.$route.query.keyword,
-      isLogin: '',
-      name: 'Guest',
-      standard: 'day',
-      level: '',
-      day: '',
+      isLogin: "",
+      name: "Guest",
+      standard: "day",
+      level: "",
+      day: "",
 
       paginavigation: function () {
         var pageNumber = [];
@@ -92,8 +129,8 @@ export default {
         var end_page = this.paging.end_page;
         for (var i = start_page; i <= end_page; i++) pageNumber.push(i);
         return pageNumber;
-      }
-    }
+      },
+    };
   },
   mounted() {
     this.fnGetList();
@@ -101,15 +138,15 @@ export default {
   methods: {
     Fnday(day) {
       this.body = {
-        day: day
-      }
-      this.$router.push({path: '/day', query: this.body});
+        day: day,
+      };
+      this.$router.push({ path: "/day", query: this.body });
     },
     FnList(id) {
       this.body = {
-        id: id
-      }
-      this.$router.push({path: '/userid', query: this.body});
+        id: id,
+      };
+      this.$router.push({ path: "/userid", query: this.body });
     },
     fnGetList() {
       this.body = {
@@ -118,63 +155,70 @@ export default {
         page: this.page,
         standard: this.standard,
         id: this.id,
-        day: '',
-        search: 'all',
+        day: "",
+        search: "all",
         isLogin: this.isLogin, //로그인을 했는지 보냄
-      }
-      this.$axios.get('http://localhost:3000/api/board', {params: this.body})
-          .then((res) => {
-            if (res.data.success) {
-              this.list = res.data.list;
-              this.paging = res.data.paging;
-              this.no = this.paging.totalCount - ((this.paging.page - 1) * this.paging.ipp);
-              this.level = res.data.level;
-            } else {
-              alert("실행중 실패했습니다.\n다시 이용해 주세요.");
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          })
+      };
+      this.$axios
+        .get("http://localhost:3000/api/board", { params: this.body })
+        .then((res) => {
+          if (res.data.success) {
+            this.list = res.data.list;
+            this.paging = res.data.paging;
+            this.no =
+              this.paging.totalCount - (this.paging.page - 1) * this.paging.ipp;
+            this.level = res.data.level;
+          } else {
+            alert("실행중 실패했습니다.\n다시 이용해 주세요.");
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     fnView(num) {
       this.body.num = num;
-      this.$router.push({path: '/board/view', query: this.body});
+      this.$router.push({ path: "/board/view", query: this.body });
     },
     fnAdd() {
       this.$router.push("/home/write");
     },
     getList() {
-      this.$axios.get("http://localhost:3000/api/board")
-          .then((res) => {
-            console.log(res);
-          })
-          .then((err) => {
-            console.log(err);
-          })
-    }
-    , fnSearch() {
+      this.$axios
+        .get("http://localhost:3000/api/board")
+        .then((res) => {
+          console.log(res);
+        })
+        .then((err) => {
+          console.log(err);
+        });
+    },
+    fnSearch() {
       this.paging.page = 1;
       this.fnGetList();
-    }
-    , fnPage(n) {
+    },
+    fnPage(n) {
       if (this.page != n) {
         this.page = n;
         this.fnGetList();
       }
-    }
+    },
   },
   created: function () {
     this.isLogin = localStorage.getItem("isLogin") == null ? "false" : "true";
-    this.id = localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
-    this.name = localStorage.getItem("name") == null ? "Guest" : localStorage.getItem("name");
+    this.id =
+      localStorage.getItem("id") == null ? "Guest" : localStorage.getItem("id");
+    this.name =
+      localStorage.getItem("name") == null
+        ? "Guest"
+        : localStorage.getItem("name");
   },
   watch: {
     standard() {
-      this.fnGetList()
-    }
-  }
-}
+      this.fnGetList();
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -203,7 +247,8 @@ export default {
   border-top: 1px solid #888;
 }
 
-.tbList th, .tbList td {
+.tbList th,
+.tbList td {
   border-bottom: 1px solid #eee;
   padding: 5px 0;
 }
@@ -223,7 +268,10 @@ export default {
   text-align: center;
 }
 
-.first, .prev, .next, .last {
+.first,
+.prev,
+.next,
+.last {
   border: 1px solid #666;
   margin: 0 5px;
 }
@@ -234,7 +282,8 @@ export default {
   color: #333;
 }
 
-.pagination a, strong {
+.pagination a,
+strong {
   text-decoration: none;
   display: inline-block;
   padding: 5px;
@@ -256,5 +305,4 @@ export default {
   color: blue;
   text-decoration: underline;
 }
-
 </style>

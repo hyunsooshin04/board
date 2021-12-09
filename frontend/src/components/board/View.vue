@@ -148,6 +148,7 @@ export default {
             })
       } else alert("삭제가 취소되었습니다.");
     },
+
     CommentGet() {
       this.$axios.get('http://localhost:3000/api/board/comment/get/' + this.num)
           .then((res) => {
@@ -176,8 +177,9 @@ export default {
             .then((res) => {
               if (res.data.ok == "ok") {
                 alert("댓글이 추가 되었습니다.");
-                this.comment = '';
-                this.CommentGet();
+                // this.CommentGet();
+                // this.comment = '';
+                location.reload(); //원래 CommentGet함수를 불러왔으면 댓글 추가 후 바로 권한 부여가 됐는데 현재는 불가?
               }
             })
       }
@@ -220,6 +222,7 @@ export default {
           })
           .catch((err) => {
             console.log(err);
+            this.CommentGet();
           })
     }
     ,
