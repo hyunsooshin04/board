@@ -37,7 +37,7 @@
         <br>
         <span style="color: grey">({{ comment.length }} / 49)</span>
       </div>
-      <h2>댓글 목록</h2>
+      <h2>댓글 목록 ({{ comment_cnt + "개"}})</h2>
       <h3 v-if="comment_cnt == 0">댓글이 없습니다.</h3>
       <table v-for="(list, index) in list" v-bind:key="index">
         <colgroup>
